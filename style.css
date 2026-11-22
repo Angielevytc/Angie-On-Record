@@ -1,0 +1,1029 @@
+/* 01. DESIGN TOKENS: change these values to update the game's entire color palette. */
+:root{--bg:#d8d3c9;--ink:#242323;--accent:#932c3a;--metal:#d2d2cd;--edge:#858581;--shadow:0 25px 65px #18151255;--font:Arial,Helvetica,sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;min-height:100%;font-family:var(--font);color:var(--ink)}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:3px solid #c45060;outline-offset:4px}.game{min-height:100vh;min-height:760px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 55% 39%,#f2eee6 0%,#dcd7cf 46%,#bbb6ae 100%)}.game:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:45;opacity:.14;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.22' filter='url(%23n)'/%3E%3C/svg%3E")}.topline{position:absolute;z-index:40;top:24px;left:4%;right:4%;display:flex;align-items:center;justify-content:space-between;letter-spacing:.16em;font-size:10px;font-weight:800}.brand{font-size:16px;letter-spacing:-.035em}.brand-dot,.star{color:var(--accent)}.topright{font-weight:600}.topright .star{padding:0 10px}
+/* 02. DISCOVERY: album sleeves are above the player, with a real horizontal scroll rail. */
+.browser{position:absolute;z-index:12;top:72px;left:50%;width:min(850px,89vw);transform:translateX(-50%);opacity:0;pointer-events:none;transition:opacity .55s .65s,top .6s .65s}.opened .browser{opacity:1;pointer-events:auto}.browser-heading{display:flex;justify-content:space-between;align-items:center;font-size:10px;letter-spacing:.17em;font-weight:800;padding:0 60px 9px}.browser-heading b{color:var(--accent);margin-left:14px}.hint-small{font-size:9px;color:#76736d}.browser-row{display:flex;align-items:center;gap:12px}.rack-viewport{overflow-x:auto;scrollbar-width:none;flex:1;scroll-snap-type:x mandatory;padding:4px 2px 14px}.rack-viewport::-webkit-scrollbar{display:none}.rack{display:flex;gap:18px;align-items:end;min-width:max-content}.sleeve{position:relative;width:124px;height:116px;flex:none;border:0;padding:0;background:transparent;transition:transform .25s,filter .25s;scroll-snap-align:center;filter:grayscale(.28)}.sleeve.selected{transform:translateY(-7px) scale(1.05);filter:none}.sleeve:before{content:"";position:absolute;inset:0 4px 6px 0;background:#242424;transform:translate(7px,5px);box-shadow:3px 8px 13px #0003}.sleeve img{position:relative;width:100%;height:100%;object-fit:cover;box-shadow:0 9px 16px #0004}.sleeve .sleeve-label{position:absolute;bottom:0;left:0;right:0;background:#1c1b1bc7;color:#fff;text-align:left;padding:7px 8px;font-size:10px;font-weight:800;letter-spacing:.07em}.sleeve .sleeve-index{position:absolute;top:6px;left:6px;background:#fff;color:#222;padding:4px;font-size:9px;font-weight:900}.rack-arrow{border:1px solid #8b8780;background:#e8e5dfad;width:32px;height:40px;font-size:26px}.rack-control{width:45px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:8px;letter-spacing:.1em;font-weight:800;writing-mode:vertical-rl}.rack-control input{height:80px;width:12px;writing-mode:vertical-lr;direction:rtl;accent-color:var(--accent)}
+/* 03. CAMERA: a 3D perspective tilt changes when the player is opened. */
+.camera-stage{position:absolute;left:0;right:0;top:240px;height:520px;perspective:1250px;pointer-events:none}.table-shadow{position:absolute;left:50%;top:355px;width:640px;height:150px;transform:translateX(-50%);border-radius:50%;background:#1714113a;filter:blur(48px)}.camera{position:absolute;left:50%;top:28px;width:670px;height:455px;transform:translateX(-50%) rotateX(0deg) scale(.97);transform-style:preserve-3d;transition:transform 1.3s cubic-bezier(.16,.85,.24,1),top 1.3s}.opened .camera{top:55px;transform:translateX(-50%) rotateX(15deg) scale(.91)}.turntable{position:relative;width:670px;height:455px;pointer-events:auto;transform-style:preserve-3d}.case-back{position:absolute;left:24px;right:24px;top:24px;height:385px;background:#a9a6a0;box-shadow:0 10px 0 #686762,0 24px 24px #0003}.deck{position:absolute;inset:32px 26px 45px;background:linear-gradient(120deg,#f3f2ed 0%,#c9cac5 36%,#e8e8e2 65%,#b7b7b3 100%);border:1px solid #888986;box-shadow:inset 0 2px 4px #fff,0 8px 0 #666560,0 17px 25px #0003;overflow:hidden}.deck-grain{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(92deg,transparent 0 2px,#ffffff14 3px 4px)}.deck-logo{position:absolute;top:13px;left:23px;font-size:13px;font-weight:900;letter-spacing:.13em}.deck-logo small{display:block;font-size:7px;letter-spacing:.2em;margin-top:3px}.platter{position:absolute;top:40px;left:96px;width:344px;height:344px;border-radius:50%;background:radial-gradient(circle,#303030 0 62%,#999 63%,#353535 64%,#858585 66%,#222 68%);box-shadow:0 3px 12px #0008,inset 0 0 2px #fff}.platter-rim{position:absolute;inset:3px;border-radius:50%;border:5px dotted #b9b9b4;opacity:.65}.record{position:absolute;inset:12px;border-radius:50%;background:repeating-radial-gradient(circle,#161616 0 2px,#262626 3px,#090909 4px,#202020 5px);box-shadow:inset 5px 8px 15px #ffffff17,inset -9px -10px 20px #0009,0 0 2px #000;opacity:0;transform:scale(.75);transition:opacity .35s,transform .6s;overflow:hidden}.record.loaded{opacity:1;transform:scale(1)}.record.spinning{animation:spin 1.82s linear infinite}.record.spinning.fast{animation-duration:1.35s}.groove{position:absolute;inset:21px;border:2px solid #eee1;border-radius:50%;box-shadow:0 0 12px #fff2}.groove-b{inset:45px;border-color:#fff1}.record-sticker{position:absolute;inset:35%;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;background:radial-gradient(circle at 25% 20%,#f5e3cf,#9a4951);font-size:9px;gap:5px;box-shadow:0 0 2px #fff8}.record-sticker strong{font-size:12px;max-width:100px}.record-sticker small{font-size:5px;letter-spacing:.1em}.spindle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);height:8px;width:8px;border-radius:50%;background:#d6d5d1;border:1px solid #666}.needle-area{position:absolute;top:36px;left:457px;width:120px;height:290px;z-index:8;touch-action:none}.tonearm{position:absolute;left:48px;top:18px;width:70px;height:275px;transform-origin:42px 22px;transform:rotate(-20deg);transition:transform .38s;cursor:grab;touch-action:none}.tonearm.dragging{transition:none;cursor:grabbing}.tonearm.engaged{transform:rotate(23deg)}.pivot{position:absolute;top:0;left:22px;width:43px;height:43px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#e5e4e0,#666662);border:5px solid #666;box-shadow:0 2px 6px #0007}.arm-rod{position:absolute;top:34px;left:40px;width:11px;height:196px;border-radius:10px;background:linear-gradient(90deg,#777,#f9f9f5,#818181);transform:rotate(11deg);box-shadow:3px 3px 5px #0005}.cartridge{position:absolute;top:218px;left:67px;width:29px;height:40px;background:linear-gradient(90deg,#333,#999,#242424);border-bottom:7px solid #9d3537;transform:rotate(11deg);box-shadow:3px 4px 5px #0006}.arm-label{position:absolute;bottom:5px;right:0;font-size:8px;letter-spacing:.14em;font-weight:800}.lid{position:absolute;inset:-25px 18px 26px;z-index:15;background:linear-gradient(145deg,#2b2a2b7a,#f3f4f33d 35%,#2222 70%,#8888);border:9px solid #888780;border-radius:9px;box-shadow:0 12px 30px #0005,inset 0 0 12px #fff5;transform-origin:center 3%;transform:perspective(800px) rotateX(0deg);transition:transform 1.15s cubic-bezier(.15,.9,.23,1),opacity 1.15s;backdrop-filter:blur(3px)}.opened .lid{transform:perspective(800px) rotateX(-79deg);opacity:.65;pointer-events:none}.lid-glass{position:absolute;inset:8px;border:2px solid #ffffff30;display:flex;align-items:center;justify-content:center}.lid-logo{font-size:42px;font-weight:900;letter-spacing:.08em;color:#fff9;text-align:center}.lid-logo small{font-size:11px;letter-spacing:.3em}.case-front{position:absolute;bottom:17px;left:26px;right:26px;height:34px;background:linear-gradient(#74726e,#3b3a38);color:#dedbd6;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:9px;letter-spacing:.22em;box-shadow:0 9px 9px #0005}
+/* 04. HARDWARE: tactile buttons, speed dial, pitch fader, strobe and tracking meter. */
+.hardware{position:absolute;z-index:10;display:flex;gap:12px;align-items:end}.hardware-left{bottom:70px;left:41px}.hardware-right{right:42px;bottom:69px;gap:10px}.hardware button{border:0;background:none;color:#272727;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:16px}.hardware small{font-size:7px;letter-spacing:.07em;font-weight:900;white-space:nowrap}.power-symbol,.speed-hardware strong,.cue-hardware>span{display:grid;place-items:center;border:2px solid #888;width:38px;height:33px;background:linear-gradient(#eaeae5,#aaa9a4);box-shadow:0 3px 3px #0005;border-radius:3px}.speed-hardware strong{font-size:14px}.round-hardware{width:49px}.round-hardware:first-letter{font-size:20px}.pitch-hardware{height:155px;width:47px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:4px;font-size:8px;font-weight:900;letter-spacing:.07em;text-align:center}.pitch-hardware input{writing-mode:vertical-lr;direction:rtl;accent-color:#922b3c;height:105px;width:20px;cursor:ns-resize}.pitch-hardware output{font-size:9px}.strobe{position:absolute;left:118px;bottom:49px;font-size:10px;letter-spacing:1px;color:#666}.tracking{position:absolute;right:27px;top:15px;font-size:8px;letter-spacing:.1em;font-weight:800}.tracking-track{margin-top:6px;width:100px;height:5px;background:#5555}.tracking-track>div{height:100%;width:0;background:#963544;transition:width .2s}.deck-footer{position:absolute;left:21px;bottom:9px;right:20px;display:flex;justify-content:space-between;font-size:8px;font-weight:800;letter-spacing:.15em}.deck-footer span{color:var(--accent)}.cue-lit .strobe{color:#d64151;text-shadow:0 0 8px #f25b6e}
+/* 05. SLEEVE ANIMATION: sleeve opens, vinyl leaves it and lands on the platter. */
+.album-object{position:absolute;z-index:25;top:305px;left:calc(50% - 90px);width:180px;height:180px;pointer-events:none;opacity:0;transform:translate(0,0) scale(.85);perspective:800px;transition:opacity .2s,transform .65s}.album-object.active{opacity:1}.album-back,.album-front{position:absolute;inset:0;box-shadow:4px 7px 18px #0006}.album-back{background:#3c3a3c;color:#fff;padding:20px}.back-copy span{font-size:9px;letter-spacing:.2em}.back-copy h2{font-size:21px;margin:23px 0 7px}.back-copy p{font-size:9px;letter-spacing:.1em}.album-front{transform-origin:left center;transition:transform .55s;overflow:hidden;background:#2a2828}.album-front img{width:100%;height:100%;object-fit:cover}.album-front-name{position:absolute;bottom:0;left:0;right:0;background:#141414ad;color:#fff;font-size:15px;font-weight:900;padding:10px}.album-disc{position:absolute;top:6px;left:7px;width:168px;height:168px;border-radius:50%;background:repeating-radial-gradient(circle,#111 0 2px,#353535 3px,#111 4px);transition:transform .7s,opacity .5s;display:grid;place-items:center}.album-disc-label{width:52px;height:52px;border-radius:50%;background:#aa4b52;border:3px solid #ddd3}.album-object.opened-sleeve .album-front{transform:rotateY(-68deg)}.album-object.disc-out .album-disc{transform:translateX(125px) rotate(160deg);opacity:.5}.album-object.to-player{transform:translate(-75px,105px) scale(1.65);opacity:0}.drag-hint{position:absolute;z-index:18;top:741px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:16px;font-size:10px;font-weight:900;letter-spacing:.2em;opacity:0;transition:opacity .3s;pointer-events:none}.drag-hint.visible{opacity:1}.hint-line{width:40px;height:1px;background:#9d3846}
+/* 06. INTRO: the scene starts as a top-down closed turntable. */
+.intro{position:absolute;z-index:30;top:255px;left:5%;width:260px;transition:opacity .5s,transform .5s}.intro-eyebrow{font-size:9px;letter-spacing:.18em;font-weight:900}.intro h1{font-size:35px;line-height:1.04;letter-spacing:-.06em;margin:16px 0 20px}.intro h1 em{font-family:Georgia,serif;font-weight:400;color:var(--accent)}.open-button{background:#252424;color:#fff;border:0;padding:15px 19px;font-size:11px;letter-spacing:.13em;font-weight:900;width:225px;text-align:left;display:flex;justify-content:space-between}.intro p{font-size:8px;letter-spacing:.17em;margin-top:19px}.opened .intro{opacity:0;pointer-events:none;transform:translateY(-20px)}
+/* 07. GATEFOLD: a real two-panel vinyl folder, not a floating website card. */
+.gatefold{position:absolute;z-index:32;left:50%;top:50%;width:min(920px,94vw);height:min(540px,76vh);transform:translate(-50%,-44%) scale(.86);display:flex;pointer-events:none;opacity:0;filter:drop-shadow(15px 28px 30px #0006);transition:opacity .35s,transform .55s}.gatefold.visible{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}.gatefold-left,.gatefold-right{width:50%;height:100%;min-width:0;position:relative}.gatefold-left{background:#181718;transform-origin:right center;transform:rotateY(-78deg);transition:transform .65s}.gatefold.visible .gatefold-left{transform:rotateY(0)}.gatefold-cover{position:absolute;inset:0;overflow:hidden;color:white}.gatefold-cover img{width:100%;height:100%;object-fit:cover}.cover-shade{position:absolute;inset:0;background:linear-gradient(transparent 35%,#000b)}.gatefold-number{position:absolute;top:22px;left:23px;background:#fff;color:#222;padding:7px;font-size:10px;font-weight:900}.gatefold-cover h2{position:absolute;bottom:55px;left:25px;font-size:43px;letter-spacing:-.06em;margin:0;text-shadow:0 3px 14px #0008}.gatefold-signature{position:absolute;bottom:28px;left:26px;font-size:10px;letter-spacing:.17em}.gatefold-right{padding:25px 28px 22px;background:#f2e9db;border-left:2px solid #3b3531;display:flex;flex-direction:column;overflow:auto}.folder-top,.folder-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:9px;letter-spacing:.12em;font-weight:900}.folder-top button,.folder-bottom button{background:transparent;border:1px solid currentColor;padding:9px;font-size:9px;font-weight:900;white-space:nowrap}.gatefold-right h3{font-size:34px;letter-spacing:-.055em;line-height:1;margin:27px 0 11px}.gatefold-right>p{font-size:13px;line-height:1.65;max-width:420px;margin:0 0 17px}.media-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}.media-grid button{width:76px;height:76px;border:0;padding:0;background:#d8cabb;overflow:hidden}.media-grid img{width:100%;height:100%;object-fit:cover}.media-grid a{font-size:9px;padding:12px;border:1px solid currentColor;color:inherit;font-weight:900;align-self:center}.folder-bottom{margin-top:auto;border-top:1px solid #aaa09a;padding-top:12px;font-size:8px}
+/* 08. BOTTOM NAVIGATION and responsive layout. */
+.bottom-strip{position:absolute;z-index:35;left:4%;right:4%;bottom:16px;min-height:64px;border-top:1px solid #4e4b47;display:flex;align-items:center;justify-content:space-between;gap:18px}.now-playing{display:flex;align-items:center;gap:11px;min-width:160px}.indicator{width:10px;height:10px;border:1px solid #777;border-radius:50%}.indicator.on{background:#9c3342;box-shadow:0 0 10px #9c3342}.now-playing small{display:block;font-size:8px;letter-spacing:.13em}.now-playing strong{display:block;font-size:11px;margin-top:4px}.bottom-buttons{display:flex;gap:5px}.bottom-buttons button{background:transparent;border:1px solid #89867f;padding:10px 12px;font-size:9px;letter-spacing:.06em;font-weight:900;white-space:nowrap}.bottom-buttons .load-button{background:#252525;color:#fff;border-color:#252525}.footer-message{font-size:8px;font-weight:900;letter-spacing:.12em;max-width:160px;text-align:right}.toast{position:absolute;z-index:55;bottom:95px;left:50%;transform:translateX(-50%) translateY(8px);background:#252525;color:white;padding:11px 18px;font-size:11px;letter-spacing:.04em;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}.toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:850px){.game{min-height:820px}.topright{display:none}.browser{top:82px;width:95vw}.camera-stage{top:260px;transform:scale(.73);transform-origin:top center;width:137%;left:-18.5%}.drag-hint{top:676px}.intro{top:620px;left:50%;transform:translateX(-50%);text-align:center;width:300px}.opened .intro{transform:translate(-50%,-20px)}.bottom-strip{bottom:5px;flex-wrap:wrap;justify-content:center;gap:8px}.footer-message{display:none}.bottom-buttons button{padding:8px;font-size:8px}.gatefold{height:560px;top:47%}.gatefold-right{padding:15px}.gatefold-right h3{font-size:25px}.gatefold-cover h2{font-size:27px}}@media(max-width:520px){.camera-stage{transform:scale(.55);width:182%;left:-41%;top:275px}.browser{top:76px}.sleeve{width:95px;height:92px}.drag-hint{top:600px}.intro{top:590px}.gatefold{flex-direction:column;height:75vh;top:48%;overflow:auto}.gatefold-left,.gatefold-right{width:100%;min-height:260px}.gatefold-right{min-height:350px}.gatefold-cover h2{font-size:28px}.bottom-buttons{flex-wrap:wrap;justify-content:center}}
+
+/* FIX 01: All physical hardware receives pointer and touch input above the deck artwork. */
+.camera-stage{pointer-events:auto}
+.turntable{isolation:isolate}
+.deck{overflow:visible}
+.hardware{z-index:25;pointer-events:auto}
+.hardware button,.hardware input{pointer-events:auto;touch-action:manipulation}
+.hardware button{min-height:46px;min-width:48px;position:relative;z-index:26}
+.hardware button:hover .power-symbol,.hardware button:hover .speed-hardware strong,.hardware button:hover .cue-hardware>span{filter:brightness(1.13)}
+.hardware button:active{transform:translateY(2px)}
+.pitch-hardware{position:relative;z-index:27;pointer-events:auto}
+.pitch-hardware input{min-width:28px;touch-action:none}
+.needle-area{z-index:24;pointer-events:auto}
+.tonearm{z-index:25;pointer-events:auto}
+/* FIX 02: Keep the album rail clickable above the scene without blocking turntable hardware. */
+.browser{z-index:35}
+.rack-viewport,.rack,.sleeve,.rack-arrow,.rack-control{pointer-events:auto}
+/* FIX 03: On-screen instructions stay out of the way of physical controls. */
+.drag-hint{z-index:36}
+
+/* 13. STEP-BY-STEP GAME GUIDE: visible, readable, and never hidden behind the turntable. */
+.step-guide{position:absolute;z-index:39;left:4%;top:112px;width:235px;padding:17px 18px;background:#f5f0e9f2;border:1px solid #938b80;box-shadow:0 12px 28px #17131122;transition:top .65s,opacity .25s}
+.step-counter{font-size:9px;letter-spacing:.18em;color:var(--accent);font-weight:900}
+.step-guide strong{display:block;font-size:18px;line-height:1.1;margin:10px 0 7px;letter-spacing:-.035em}
+.step-guide p{font-size:11px;line-height:1.55;margin:0 0 12px;color:#55504a}
+.step-guide button{background:#282522;color:#fff;border:0;padding:11px 12px;font-size:10px;font-weight:900;letter-spacing:.06em;width:100%;text-align:left}
+/* 14. ALBUM DISCOVERY: the entire collection slides upward after the lid opens. */
+.browser{top:240px;transform:translateX(-50%) translateY(10px);transition:opacity .55s .25s,top .85s cubic-bezier(.15,.8,.2,1),transform .85s}
+.opened .browser{top:52px;transform:translateX(-50%) translateY(0)}
+.opened .browser .sleeve{height:138px;width:140px}
+.opened .browser .sleeve.selected{transform:translateY(-9px) scale(1.10);z-index:2}
+/* 15. BIG GATEFOLD: album opens prominently, with a backdrop to separate it from the hardware. */
+.folder-backdrop{position:absolute;inset:0;background:#1c1916b8;z-index:40;opacity:0;pointer-events:none;transition:opacity .4s}
+.game:has(.gatefold.visible) .folder-backdrop{opacity:1;pointer-events:auto}
+.gatefold{z-index:41;width:min(1160px,94vw);height:min(680px,81vh);top:49%;filter:drop-shadow(0 30px 50px #000a)}
+.gatefold.visible{transform:translate(-50%,-50%) scale(1)}
+.gatefold-cover h2{font-size:clamp(34px,4vw,62px)}
+.gatefold-right h3{font-size:clamp(27px,3vw,42px)}
+.gatefold-right>p{font-size:15px}
+/* 16. Active guidance: only the next relevant object receives a subtle highlight. */
+.game[data-step="2"] .rack-viewport{outline:2px solid #9e4450;outline-offset:3px}
+.game[data-step="3"] .tonearm{filter:drop-shadow(0 0 8px #d7485a)}
+@media(max-width:1100px){.step-guide{top:260px;width:190px;left:2%}.opened .browser{top:65px;width:90vw}.opened .browser .sleeve{width:115px;height:110px}}
+@media(max-width:700px){.step-guide{left:3%;top:200px;width:180px;padding:11px}.step-guide strong{font-size:14px}.step-guide p{font-size:10px}.step-guide button{font-size:9px}.opened .browser{top:62px}.opened .browser .sleeve{width:92px;height:92px}.gatefold{width:96vw;height:75vh;top:49%}.gatefold-right>p{font-size:12px}}
+
+/* 17. V6: remove the tutorial box and the redundant website-style footer completely. */
+.step-guide,.bottom-strip{display:none!important}
+/* A small red status strip tells the player what to do, without covering the turntable. */
+.game-prompt{position:absolute;z-index:39;top:40px;left:3%;display:flex;align-items:center;gap:12px;max-width:330px;padding:10px 14px;background:#a7293a;color:#fff;box-shadow:0 8px 24px #4b10192b;pointer-events:none;transition:opacity .25s}
+.game-prompt #stepCounter{font-size:10px;letter-spacing:.16em;opacity:.75;font-weight:800;white-space:nowrap}
+.game-prompt #stepTitle{font-size:11px;letter-spacing:.1em;font-weight:900;line-height:1.4}
+.game-prompt.behind-folder{z-index:42;top:auto;bottom:15px;left:50%;transform:translateX(-50%);max-width:90vw;white-space:nowrap}
+/* Red guidance goes onto the actual controls, rather than a fake shortcut button. */
+@keyframes actionPulse{0%,100%{box-shadow:0 0 0 3px #b82939,0 0 0 8px #b829390e}50%{box-shadow:0 0 0 3px #b82939,0 0 0 12px #b8293938}}
+.game[data-step="1"] .open-button{background:#b82939;animation:actionPulse 1.7s ease-in-out infinite}
+.game[data-step="2"] .rack-viewport{outline:3px solid #b82939;outline-offset:4px;border-radius:3px}
+.game[data-step="2"] .sleeve.selected{filter:none;box-shadow:0 0 0 4px #b82939;animation:actionPulse 1.7s ease-in-out infinite}
+.game[data-step="3"] .tonearm{filter:drop-shadow(0 0 9px #b82939) drop-shadow(0 0 3px #b82939)}
+.game[data-step="3"] .drag-hint{color:#b82939;font-size:12px;letter-spacing:.13em}
+.game[data-step="3"] .drag-hint .hint-line{height:2px;background:#b82939}
+.game[data-step="4"] #closeFolder{background:#b82939;color:#fff;border-color:#b82939}
+/* Without the footer, the scene can use the full viewport without overlapping controls. */
+.game{min-height:790px}
+@media(max-width:1100px){.game-prompt{top:36px;left:2%;padding:9px 11px}.game-prompt #stepTitle{font-size:9px}}
+@media(max-width:700px){.game-prompt{top:39px;left:2%;max-width:210px}.game-prompt #stepTitle{font-size:8px}.game-prompt.behind-folder{top:auto;bottom:10px}}
+
+/* Accessibility-only status elements do not occupy the game screen. */
+.sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+
+/* V7 VISUAL REFINEMENT: the previous red banners were redundant and overlapped the album browser. */
+.game-prompt,.game-prompt.behind-folder{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;padding:0!important;border:0!important;box-shadow:none!important;pointer-events:none!important}
+/* Keep the record player close enough to inspect its controls without adding page scroll. */
+.camera-stage{top:235px;height:640px}
+.camera{width:760px;height:535px;top:5px;transform:translateX(-50%) rotateX(0deg) scale(1.02)}
+.opened .camera{top:35px;transform:translateX(-50%) rotateX(10deg) scale(1.02)}
+.turntable{width:760px;height:535px}
+.case-back{top:24px;height:470px}
+.deck{inset:32px 26px 45px}
+.case-front{bottom:17px}
+/* The platter occupies the upper left; a distinct lower strip is reserved for controls. */
+.platter{left:110px;top:49px;width:326px;height:326px}
+.deck-logo{top:15px;left:22px}
+.hardware-left{left:35px;bottom:52px;gap:22px}
+.hardware-right{right:28px;bottom:52px;gap:18px}
+.hardware button{min-width:54px;min-height:58px}
+.hardware small{font-size:8px;letter-spacing:.035em}
+.hardware-right .round-hardware{min-width:62px}
+.pitch-hardware{height:164px;width:60px}
+.pitch-hardware input{height:106px}
+.strobe{left:180px;bottom:22px}
+.tracking{right:27px;top:17px}
+.deck-footer{bottom:8px}
+/* Put the tonearm hinge and its cartridge in the same transform group.
+   Both elements now rotate around the pivot together, so the needle stays attached. */
+.needle-area{left:565px;top:63px;width:100px;height:295px;z-index:16}
+.tonearm{left:0;top:0;width:110px;height:280px;transform-origin:47px 24px;transform:rotate(-13deg)}
+.tonearm.engaged{transform:rotate(29deg)}
+.pivot{left:25px;top:0;width:46px;height:46px}
+.arm-rod{left:45px;top:40px;width:12px;height:193px;transform:none;border-radius:8px 8px 3px 3px}
+.cartridge{left:37px;top:228px;width:29px;height:37px;transform:none;border-radius:3px 3px 1px 1px}
+.arm-label{bottom:0;right:0}
+/* Make the closed dust cover more opaque and large enough to fully conceal the deck. */
+.lid{inset:-28px 18px 18px;background:linear-gradient(135deg,rgba(82,82,82,.89),rgba(204,205,205,.83) 43%,rgba(92,92,92,.86));backdrop-filter:blur(10px);border:10px solid #85847e;box-shadow:0 16px 36px #0007,inset 0 0 22px #fff7}
+.opened .lid{opacity:.72}
+/* Make the next real interaction stand out, without a duplicate instruction banner. */
+.game[data-step="1"] .open-button{box-shadow:0 0 0 6px #ad293944,0 7px 26px #a7293a44}
+.game[data-step="2"] .rack-viewport{outline:3px solid #b82939;outline-offset:3px}
+.game[data-step="3"] .tonearm{filter:drop-shadow(0 0 7px #b82939)}
+.game[data-step="4"] .gatefold{outline:3px solid #a7293a;outline-offset:2px}
+/* On shorter windows, keep the enlarged deck visible instead of clipping the front edge. */
+@media(max-height:860px) and (min-width:850px){.camera-stage{top:195px}.camera{transform:translateX(-50%) scale(.88)}.opened .camera{transform:translateX(-50%) rotateX(10deg) scale(.88)}.opened .browser{top:43px}.opened .browser .sleeve{width:115px;height:108px}}
+@media(max-width:850px){.camera-stage{top:280px;left:50%;width:760px;right:auto;transform:translateX(-50%) scale(.72);transform-origin:top center}.camera{transform:translateX(-50%) scale(1)}.opened .camera{transform:translateX(-50%) rotateX(10deg) scale(1)}.browser{width:95vw}.opened .browser .sleeve{width:105px;height:103px}}
+@media(max-width:520px){.camera-stage{top:320px;left:50%;width:760px;transform:translateX(-50%) scale(.49)}.camera{transform:translateX(-50%) scale(1)}.opened .camera{transform:translateX(-50%) rotateX(10deg) scale(1)}}
+
+/* V8 — CLOSED COVER: completely conceal the hardware until the lid opens.
+   The logo is the only artwork visible on the closed lid.
+   This override applies only while the game is NOT in the opened state. */
+.game:not(.opened) .lid {
+  background: linear-gradient(145deg, #8d8e8e 0%, #a7a8a8 38%, #777a7b 100%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  opacity: 1;
+}
+.game:not(.opened) .lid-glass {
+  border-color: transparent;
+}
+.game:not(.opened) .lid-logo {
+  color: #f7f6f3;
+  text-shadow: 0 1px 3px #3336;
+}
+
+/* 14. GALLERY INTERIOR ONLY. The outside of every sleeve and the record player are unchanged. */
+.gallery-inside[hidden]{display:none!important}
+.gatefold.gallery-mode{width:min(1190px,96vw);height:min(720px,88vh);background:#141214;overflow:hidden}
+.gatefold.gallery-mode>.gatefold-left,.gatefold.gallery-mode>.gatefold-right{display:none!important}
+.gallery-inside{position:absolute;inset:0;background:#141214;color:#f5f1ed;display:flex;flex-direction:column;padding:23px 27px 20px;min-width:0;font-family:Arial,Helvetica,sans-serif;overflow:hidden}
+.gallery-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-shrink:0}.gallery-kicker{font-size:9px;letter-spacing:.22em;color:#b3aaa9;font-weight:800}.gallery-head h2{font-family:Georgia,serif;font-size:clamp(34px,4vw,55px);font-weight:400;line-height:.95;margin:7px 0 5px;letter-spacing:-.06em}.gallery-head h2 span{color:#a82d42}.gallery-head p{font-size:11px;color:#b2a9aa;margin:0 0 12px}.gallery-head>button{background:none;color:#eee;border:1px solid #62595c;padding:11px 13px;font-size:10px;letter-spacing:.1em;cursor:pointer}
+.gallery-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0 14px;flex-shrink:0}.gallery-tab{height:62px;display:flex;align-items:center;text-align:left;gap:10px;padding:7px;background:#222022;border:1px solid #3b3538;color:#eee;cursor:pointer;min-width:0}.gallery-tab.active{border-color:#bf3850;background:#33242a}.gallery-tab img,.gallery-tab-mark{width:49px;height:46px;object-fit:cover;flex-shrink:0}.gallery-tab-mark{display:grid;place-items:center;background:#3d2a31;color:#fff}.gallery-tab span:not(.gallery-tab-mark){min-width:0}.gallery-tab small{display:block;font-size:9px;color:#bdb2b2;margin-bottom:4px}.gallery-tab strong{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gallery-main{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(250px,1fr);gap:22px;min-height:0;flex:1}.gallery-screen-column{display:flex;flex-direction:column;min-height:0;gap:9px}.gallery-screen{background:#080808;border:8px solid #29282b;outline:1px solid #534d51;position:relative;flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}.gallery-screen-top,.gallery-screen-bottom{height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;gap:12px;font-size:9px;letter-spacing:.12em;font-weight:700;flex-shrink:0}.gallery-rec{display:inline-block;width:7px;height:7px;background:#c52d46;border-radius:50%;margin-right:5px}.gallery-screen-content{flex:1;min-height:0;display:grid;place-items:center;overflow:hidden;background:#050505}.gallery-screen-content>img,.gallery-screen-content>iframe{width:100%;height:100%;border:0;display:block}.gallery-screen-content>img{object-fit:cover;object-position:center}.gallery-screen-bottom{justify-content:flex-start}.gallery-screen-bottom button{background:transparent;border:0;color:white;font-size:23px;line-height:1;cursor:pointer;padding:0 7px}.gallery-progress{height:3px;background:#514b4d;flex:1}.gallery-progress span{display:block;height:100%;background:#b73149}.gallery-thumbs{display:flex;gap:7px;overflow-x:auto;flex-shrink:0;min-height:57px}.gallery-thumb{width:86px;height:53px;padding:0;flex-shrink:0;border:2px solid transparent;background:#2d2b2c;color:#fff;cursor:pointer}.gallery-thumb.active{border-color:#c73550}.gallery-thumb img{width:100%;height:100%;object-fit:cover}.gallery-thumb span{font-size:11px}
+.gallery-details{min-width:0;overflow-y:auto;padding:7px 3px}.gallery-category{font-size:10px;color:#cf7b89;letter-spacing:.16em;font-weight:800}.gallery-details h3{font-family:Georgia,serif;font-size:clamp(25px,2.6vw,40px);font-weight:400;letter-spacing:-.04em;line-height:1.08;margin:13px 0 15px}.gallery-details>p:not(.gallery-key-hint){font-size:13px;line-height:1.75;color:#d2c9c9}.gallery-extra a{display:inline-block;margin-top:12px;color:#f0d5db;font-size:11px;letter-spacing:.1em;border-bottom:1px solid #a9364d;padding-bottom:6px}.gallery-key-hint{margin-top:24px;color:#9f9799;font-size:10px;line-height:1.7}
+@media(max-width:760px){.gatefold.gallery-mode{height:88vh}.gallery-inside{padding:15px}.gallery-tabs{gap:4px}.gallery-tab{padding:3px;height:53px;gap:3px}.gallery-tab img,.gallery-tab-mark{width:28px;height:35px}.gallery-tab strong{font-size:8px}.gallery-main{grid-template-columns:1fr;grid-template-rows:minmax(230px,1fr) auto;gap:8px}.gallery-details{max-height:150px}.gallery-details h3{font-size:24px;margin:5px 0}.gallery-details>p:not(.gallery-key-hint){font-size:11px;margin:0}.gallery-key-hint{display:none}.gallery-head h2{font-size:35px}}
+
+/* Gallery viewer belongs inside the sleeve overlay and must sit above its artwork. */
+.gatefold.gallery-mode{position:fixed;}
+.gatefold.gallery-mode .gallery-inside{z-index:20;}
+
+/* V11: GALLERY INTERIOR ONLY — restore the original ivory/burgundy visual identity. */
+.gatefold.gallery-mode{background:#f3efe8}
+.gallery-inside{background:#f3efe8;color:#272522}
+.gallery-kicker{color:#782a3b}.gallery-head h2 span{color:#782a3b}
+.gallery-head p{color:#70675f}.gallery-head>button{color:#272522;border-color:#b9aea4}
+.gallery-tab{background:#eae4dc;border-color:#d1c6be;color:#272522}
+.gallery-tab.active{background:#f9f3ec;border-color:#782a3b;box-shadow:inset 0 -3px #782a3b}
+.gallery-tab small{color:#756c65}.gallery-tab-mark{background:#782a3b}
+.gallery-screen{background:#e9e3dc;border-color:#c9beb4;outline-color:#a99d93}
+.gallery-screen-top,.gallery-screen-bottom{color:#453c37;background:#eae4dc}
+.gallery-screen-content{background:#e9e3dc;position:relative;padding:0;display:flex;align-items:center;justify-content:center}
+/* Photo stage follows the image aspect ratio; no object-fit:cover cropping. */
+.gallery-screen-content>img{width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;object-position:center;display:block}
+.gallery-screen-content>iframe{width:100%;height:100%;border:0;display:block;aspect-ratio:16/9}
+.gallery-screen-content:has(>img){background:#e9e3dc}
+.gallery-screen-content:has(>img) img{box-shadow:0 1px 12px #332b2417}
+.gallery-screen-bottom button{color:#272522}.gallery-progress{background:#c6b9b0}.gallery-progress span{background:#782a3b}
+.gallery-thumb{background:#e4dcd3;color:#272522}.gallery-thumb.active{border-color:#782a3b}
+.gallery-category{color:#782a3b}.gallery-details>p:not(.gallery-key-hint){color:#615950}
+.gallery-extra a{color:#782a3b;border-color:#782a3b}.gallery-key-hint{color:#766e67}
+/* Keep the media stage clean, while adapting its inner frame to original photo dimensions. */
+.gallery-screen-content .gallery-photo-mat{width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.gallery-screen-content .gallery-photo-mat img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
+.gallery-screen-content .gallery-video-mat{width:100%;height:100%;display:grid;place-items:center;background:#eae4dc}
+.gallery-screen-content .gallery-video-mat iframe{width:100%;height:100%;border:0}
+
+/* V13: Small, focused changes to the physical deck. Keep the original visual style. */
+/* Place the 45 RPM adapter in the free strip to the left of the platter. */
+.hardware-left #adapterButton{position:absolute;left:-5px;bottom:146px;z-index:30;min-width:49px}
+/* The pitch slider belongs beside the tonearm, not underneath its cartridge. */
+.hardware-right .pitch-hardware{position:absolute;right:86px;bottom:0;width:48px;height:145px;z-index:25}
+.hardware-right .pitch-hardware input{height:88px}
+/* Keep the arm label above its controls instead of across the volume slider. */
+.needle-area .arm-label{top:-12px;right:0;bottom:auto;font-size:8px}
+/* Now Playing: original two-line indicator, outside the deck and below the controls. */
+.now-playing-panel{position:absolute;z-index:35;left:5%;bottom:27px;display:flex;align-items:center;gap:22px;min-width:230px;padding:30px 0 0;border-top:1px solid #55504c;color:#2c2928;pointer-events:none}
+.now-playing-light{display:block;width:19px;height:19px;border:2px solid #858581;border-radius:50%;flex:none;transition:background .2s,box-shadow .2s,border-color .2s}
+.now-playing-panel.is-playing .now-playing-light{background:#a42e42;border-color:#a42e42;box-shadow:0 0 14px #a42e4266}
+.now-playing-copy{display:flex;flex-direction:column;gap:7px}
+.now-playing-caption{font-size:15px;font-weight:500;letter-spacing:.11em}
+.now-playing-title{font-size:21px;line-height:1.1;font-weight:900;letter-spacing:0}
+.game:not(.opened) .now-playing-panel{display:none}
+@media(max-width:760px){.now-playing-panel{left:5%;bottom:12px;min-width:170px;gap:12px;padding-top:15px}.now-playing-caption{font-size:10px}.now-playing-title{font-size:14px}.now-playing-light{width:13px;height:13px}}
+
+
+/* V15: Keep Now Playing visually secondary to the turntable. */
+.now-playing-panel{left:5%;bottom:24px;gap:11px;min-width:0;width:205px;max-width:24vw;padding-top:11px;border-top-color:#77716c}
+.now-playing-light{width:11px;height:11px;border-width:1.5px}
+.now-playing-copy{gap:4px;min-width:0}
+.now-playing-caption{font-size:10px;letter-spacing:.13em}
+.now-playing-title{font-size:13px;line-height:1.25;font-weight:750;letter-spacing:.015em;overflow-wrap:anywhere}
+@media(max-width:760px){.now-playing-panel{left:4%;bottom:8px;width:150px;max-width:40vw;gap:7px;padding-top:7px}.now-playing-caption{font-size:8px}.now-playing-title{font-size:10px}.now-playing-light{width:9px;height:9px}}
+
+/* HOME BUTTON: subtle, fixed in the bottom-right without overlapping the deck. */
+.home-reset-button{position:absolute;right:22px;bottom:20px;z-index:65;display:flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #9b9189;background:#f2eee9e8;color:#6d343d;font:700 9px/1.2 Arial,sans-serif;letter-spacing:.09em;cursor:pointer;box-shadow:0 2px 8px #342b2812;transition:background .15s,color .15s}
+.home-reset-button:hover,.home-reset-button:focus-visible{background:#9d3040;color:white;outline-offset:3px}
+.game:not(.opened) .home-reset-button{display:none}
+@media(max-width:760px){.home-reset-button{right:10px;bottom:10px;padding:7px 8px;font-size:8px}}
+
+/* V19: Hover previews feel tactile, without permanently selecting covers in red. */
+.opened .browser .sleeve:hover,
+.opened .browser .sleeve:focus-visible{transform:translateY(-15px) scale(1.12);filter:none;z-index:6;outline:2px solid #a72f43;outline-offset:3px;box-shadow:0 8px 22px #67263736}
+/* Keep the selected cover gently forward, but remove the old endless red pulse. */
+.game[data-step="2"] .sleeve.selected{animation:none;box-shadow:none}
+/* Red is a quick opening animation, not a permanent highlighted state. */
+.sleeve.just-opened{animation:albumFlashV19 .85s ease-out 1!important}
+@keyframes albumFlashV19{0%{outline:4px solid #a72f43;outline-offset:4px;filter:drop-shadow(0 0 12px #a72f4380)}100%{outline:4px solid transparent;outline-offset:4px;filter:none}}
+.game[data-step="4"] .gatefold{outline:0!important}
+
+/* V20: Fit the complete six-cover collection into the available rack width.
+   Covers retain their full artwork and are never clipped by the discovery viewport. */
+.opened .browser{width:min(980px,94vw)}
+.browser-row{gap:9px}
+.rack-viewport{min-width:0;overflow-x:auto;overflow-y:visible;padding:9px 5px 15px;scroll-padding-inline:5px}
+.rack{width:100%;min-width:0;gap:9px;align-items:center;justify-content:space-between}
+.rack .sleeve{width:calc((100% - 45px)/6);min-width:0;height:auto;aspect-ratio:1.07;transform-origin:center center}
+.rack .sleeve img{object-fit:cover}
+/* Only hover or keyboard focus shows burgundy; no permanent red frame. */
+.game[data-step="2"] .rack-viewport{outline:none!important;box-shadow:none!important}
+.game[data-step="2"] .sleeve.selected{box-shadow:none!important;outline:none!important;animation:none!important}
+.opened .browser .sleeve.selected{transform:none;filter:none;z-index:1}
+.opened .browser .sleeve:hover,.opened .browser .sleeve:focus-visible{transform:translateY(-8px) scale(1.045);outline:2px solid #a72f43;outline-offset:2px;z-index:5}
+@media(max-width:720px){.opened .browser{width:96vw}.rack{gap:5px}.rack .sleeve{width:calc((100% - 25px)/6)}.browser-row{gap:4px}.rack-arrow{width:24px}.rack-control{width:28px}}
+
+/* V21 — The discovery rail is a browsing tool, not a record-loading control.
+   Extra breathing room above the covers prevents the hover animation being clipped. */
+.opened .browser{top:48px;width:min(1040px,96vw)}
+.browser-heading{padding:0 48px 5px}
+.browser-row{align-items:center;gap:10px}
+.rack-viewport{padding:32px 9px 16px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.rack{align-items:center;min-height:138px;gap:12px}
+.rack .sleeve{width:calc((100% - 60px)/6);height:auto;aspect-ratio:1.06;transform-origin:center center}
+.opened .browser .sleeve:hover,.opened .browser .sleeve:focus-visible{transform:translateY(-10px) scale(1.075);outline:2px solid #a72f43;outline-offset:2px;z-index:5}
+/* Keep the burgundy cue on the selected cover, without a large red frame. */
+.opened .browser .sleeve.selected:not(:hover){outline:2px solid #a72f43;outline-offset:2px}
+/* Center the physical-style discovery fader below the album collection. */
+.browser .rack-control{width:min(340px,55%);margin:1px auto 0;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px;writing-mode:horizontal-tb;font-size:9px;letter-spacing:.14em}
+.browser .rack-control input{height:20px;width:100%;min-width:80px;writing-mode:horizontal-tb;direction:ltr;cursor:ew-resize;accent-color:#a72f43}
+.browser .rack-control span{white-space:nowrap}
+@media(max-width:720px){.opened .browser{width:97vw}.rack{gap:5px;min-height:95px}.rack .sleeve{width:calc((100% - 25px)/6)}.rack-viewport{padding-top:24px}.browser .rack-control{width:65%}}
+
+/* V22: Keep the discovery slider clear of the open dust cover.
+   Reduce only the empty space below the album row; do not move the turntable. */
+.opened .browser .rack-viewport { padding-bottom: 0; }
+.opened .browser .rack-control { margin-top: -17px; position: relative; z-index: 2; }
+
+/* V23: Add breathing room between the album sleeves and Discovery slider.
+   Keep the turntable and its dust cover in their original positions. */
+.opened .browser .rack-control { margin-top: 5px; }
+
+/* V25: Restore the V23 turntable and vinyl proportions.
+   No oversized record, stretched stage, or forced extra page height. */
+/* Keep Discovery between the sleeves and the dust cover with natural gaps. */
+.opened .browser .rack-control { margin-top: 0; }
+/* Put the needle instruction beneath the deck instead of across its hardware. */
+.drag-hint { top: 735px; font-size: 10px; gap: 10px; white-space: nowrap; }
+.drag-hint .hint-line { width: 20px; }
+@media (max-height: 860px) and (min-width: 851px) {
+  .drag-hint { top: 712px; }
+}
+@media (max-width: 850px) {
+  .drag-hint { top: 685px; }
+}
+
+/* V26: Clean up duplicate discovery labels without changing player proportions. */
+.browser-heading{justify-content:flex-start;padding:0 47px 4px;letter-spacing:.12em}
+.browser-heading>span{white-space:nowrap}
+/* The discovery rail keeps its function; its redundant range numbers are removed. */
+.browser .rack-control{gap:12px}
+/* Physical mini sleeve: a miniature preview of the content, not a plain text back. */
+.album-back{padding:0;background:#eee6da;color:#292523;overflow:hidden;border:5px solid #d6c9b8}
+.back-copy{position:relative;height:100%;padding:9px 10px;background:linear-gradient(130deg,#f4e8d9,#e0d4c5)}
+.back-preview-image{height:72px;overflow:hidden;border:1px solid #9c8f85;background:#ddd0c0;margin-bottom:6px}
+.back-preview-image img{width:100%;height:100%;object-fit:cover;display:block}
+.back-copy span{font-size:7px;letter-spacing:.11em;color:#8e3447;font-weight:900}
+.back-copy h2{font-size:16px;line-height:1.05;margin:3px 0 2px;letter-spacing:-.035em}
+.back-copy p{font-size:7px;line-height:1.2;margin:0;letter-spacing:.035em}
+.back-preview-rule{height:1px;background:#a68e83;margin:6px 0 3px}
+.back-copy small{font-size:6px;font-weight:800;letter-spacing:.13em}
+
+/* V28: Hide legacy sleeve numbering without moving or resizing any content. */
+.gatefold-number{display:none!important}
+/* Match Gallery typography and accents to the ivory and burgundy record-player palette. Layout stays unchanged. */
+.gallery-inside{font-family:Arial,Helvetica,sans-serif}
+.gallery-head h2,.gallery-details h3{font-family:Georgia,"Times New Roman",serif}
+.gallery-tab.active,.gallery-thumb.active{border-color:#8b2d42}
+.gallery-progress span,.gallery-rec{background:#8b2d42}
+
+/* V29: The vinyl center label displays only the album title. */
+.record-sticker > small, .record-sticker > span:not(.spindle) { display:none !important; }
+
+/* V30: About and Contact have editorial content inside the existing sleeve. */
+.about-record-details{width:100%;display:grid;gap:0;margin:6px 0 14px;font-size:11px}
+.about-record-details>div{display:grid;grid-template-columns:115px 1fr;gap:10px;border-top:1px solid #b7aaa4;padding:11px 0;line-height:1.4}
+.about-record-details b{font-size:9px;color:#85374b;letter-spacing:.07em}
+.contact-record-details{display:flex;flex-direction:column;gap:18px;align-items:flex-start;margin-top:15px}
+.contact-record-details span{font-size:11px;letter-spacing:.08em}
+.contact-record-details a{background:#813447;color:#fff;text-decoration:none;padding:14px 20px;font-weight:800;font-size:12px}
+.gallery-video-mat video{display:block;width:100%;height:100%;max-height:100%;object-fit:contain;background:#141414}
+
+/* Contact soundtrack: a small, accessible fallback control for browser audio restrictions. */
+.contact-music-button{display:inline-block;cursor:pointer;background:#792b40;color:#fff;border:1px solid #792b40;padding:12px 16px;font:700 12px/1.3 Arial,sans-serif;letter-spacing:.07em;margin:12px 0}
+.contact-music-button:hover,.contact-music-button:focus-visible{background:#a33d56;outline:2px solid #792b40;outline-offset:2px}
+
+/* Display a clear message if a local episode file is missing. */
+.video-file-error{font:600 13px Arial,sans-serif;color:#842b43;padding:12px;text-align:center}
+
+/* V36: Branding only. Keep player geometry and interactions unchanged. */
+.brand{font-style:italic;font-weight:900;letter-spacing:-.055em;white-space:nowrap}.registered-mark{font-size:.48em;vertical-align:super;margin-left:2px;letter-spacing:0;font-style:normal}.topright{display:flex;align-items:center;gap:10px}.header-vinyl-logo{display:inline-block;width:23px;height:23px;object-fit:contain;vertical-align:middle;flex:none}
+
+/* V37: Small spacing corrections only. Keep the player and record sizes unchanged. */
+/* Give the needle instruction a little more clearance below the player edge. */
+.drag-hint { top: 764px; }
+/* Bring the collection label closer to the sleeves without covering their hover area. */
+.opened .browser-heading { position: relative; top: 12px; }
+@media (max-height: 860px) and (min-width: 851px) {
+  .drag-hint { top: 741px; }
+}
+@media (max-width: 850px) {
+  .drag-hint { top: 714px; }
+}
+
+/* V38 — MY STORY / MEMORY BOOK: limited to the first sleeve. */
+.gatefold:has(.story-book){width:min(1110px,96vw);height:min(650px,83vh)}
+.gatefold:has(.story-book) .gatefold-left{width:35%}
+.gatefold:has(.story-book) .gatefold-right{width:65%;padding:22px 24px}
+.gatefold:has(.story-book) .gatefold-right>h3,.gatefold:has(.story-book) .gatefold-right>#folderDescription{display:none}
+.gatefold:has(.story-book) .media-grid{display:block;flex:1;margin:12px 0;min-height:0}
+.story-book{font-family:Arial,Helvetica,sans-serif;color:#292320;max-width:100%;}
+.story-book-top,.story-book-foot{display:flex;justify-content:space-between;gap:12px;font-size:9px;letter-spacing:.15em;font-weight:800;border-bottom:1px solid #bdb0a3;padding-bottom:9px}
+.story-book-foot{border-bottom:0;border-top:1px solid #bdb0a3;padding:10px 0 0;margin-top:10px}
+.story-chapters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:12px 0}
+.story-chapters button{width:auto;height:auto;min-height:35px;padding:7px 5px;font-size:9px;line-height:1.25;text-align:center;border:1px solid #b9aca0;background:transparent;color:#514841;cursor:pointer;font-weight:800;letter-spacing:.04em}
+.story-chapters button.active{background:#a13e4d;color:#fff;border-color:#a13e4d}
+.story-spread{display:grid;grid-template-columns:56% 44%;min-height:245px;background:#e9ded0;border:1px solid #c9b8a7}
+.story-feature{height:245px;position:relative;overflow:hidden;background:#c7b4a2}
+.story-feature img{width:100%;height:100%;object-fit:cover;display:block}
+.story-stamp{position:absolute;left:10px;bottom:10px;background:#f4e8d8e8;padding:5px 7px;font-size:9px;font-weight:800;letter-spacing:.09em}
+.story-caption{padding:17px 16px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.story-eyebrow{font-size:9px;font-weight:900;letter-spacing:.1em;color:#a13e4d}
+.story-caption h4{font-family:Georgia,serif;font-style:italic;font-size:25px;line-height:1.08;margin:0;font-weight:500}
+.story-caption p{font-size:12px;line-height:1.5;margin:0}
+.story-counter{font-size:9px;letter-spacing:.1em;font-weight:900;margin-top:5px}
+.story-filmstrip{display:flex;gap:8px;margin-top:10px;overflow-x:auto;padding:3px 0 6px}
+.story-filmstrip button{width:76px;height:69px;flex:0 0 76px;overflow:hidden;border:3px solid transparent;padding:0;cursor:pointer;background:#d2c4b8}
+.story-filmstrip button.active{border-color:#a13e4d;transform:translateY(-2px)}
+.story-filmstrip img{width:100%;height:100%;object-fit:cover;display:block}
+@media(max-width:700px){.gatefold:has(.story-book){width:97vw;height:85vh}.gatefold:has(.story-book) .gatefold-left{display:none}.gatefold:has(.story-book) .gatefold-right{width:100%;padding:16px}.story-spread{grid-template-columns:1fr}.story-feature{height:180px}.story-caption{padding:10px}.story-caption h4{font-size:21px}.story-chapters{grid-template-columns:repeat(2,1fr)}}
+
+/* V39: Keep all memory images fully visible, including portrait thumbnails. */
+.story-feature{background:#e1d5c8;display:flex;align-items:center;justify-content:center;}
+.story-feature img{object-fit:contain;object-position:center;width:100%;height:100%;}
+.story-filmstrip button{width:100px;height:80px;flex:0 0 100px;background:#e8ded3;display:flex;align-items:center;justify-content:center;}
+.story-filmstrip img{object-fit:contain;object-position:center;width:100%;height:100%;}
+.story-filmstrip{scrollbar-width:thin;}
+
+/* V42: memory book copy and compact, balanced footer */
+.story-book-top{font-size:10px;letter-spacing:.12em;padding:9px 0 12px}
+.story-book-foot{font-size:10px;letter-spacing:.08em;align-items:center;padding:13px 0 5px;min-height:40px}
+.story-book-foot span{color:#8e3449;font-weight:800}
+.story-stamp{font-size:10px;letter-spacing:.07em}
+
+/* V45: Show the entire Brela video frame at its original 16:9 ratio. */
+.gallery-screen-content:has(.gallery-video-mat){overflow:hidden;min-height:0;padding:0;}
+.gallery-screen-content .gallery-video-mat{width:100%;height:100%;min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#171514;}
+.gallery-screen-content .gallery-video-mat video{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;object-position:center;aspect-ratio:16 / 9;flex:0 1 auto;}
+
+/* V46: Only reposition Contact Me cover photo inside its unchanged frame. */
+.rack .sleeve:last-child img{object-position:center 12%;}
+
+/* Just for Fun: its own interactive interest room, without changing the other sleeves. */
+.gatefold:has(.fun-room){width:min(1120px,96vw);height:min(790px,90vh)}
+.gatefold:has(.fun-room) .gatefold-left{display:none}
+.gatefold:has(.fun-room) .gatefold-right{width:100%;max-width:none;overflow-y:auto}
+.gatefold:has(.fun-room) #folderHeading,.gatefold:has(.fun-room) #folderDescription,.gatefold:has(.fun-room) .folder-bottom{display:none}
+.gatefold:has(.fun-room) #mediaGrid{display:block;width:100%;max-width:none}
+.fun-room{font-family:Arial,sans-serif;color:#2d2928;max-width:100%;padding:8px 0 22px}
+.fun-intro{border-top:1px solid #b8a89e;padding:16px 0 20px}
+.fun-intro>span,.fun-tag{font-size:11px;letter-spacing:.17em;font-weight:800;color:#a13e4d}
+.fun-intro h4{font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(36px,5vw,64px);line-height:1.1;margin:8px 0}
+.fun-intro h4 span{color:#a13e4d}.fun-intro p{font-size:15px;margin:0}
+.fun-selector{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:17px}
+.fun-selector button{cursor:pointer;border:1px solid #c7b8ad;background:#f1e8dd;min-height:78px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#302b29}
+.fun-selector button span{font-size:23px}.fun-selector button strong{font-size:11px;letter-spacing:.08em}
+.fun-selector button.active{background:#a13e4d;color:#fff;border-color:#a13e4d}
+.fun-stage{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.85fr);border:1px solid #c4b5a8;min-height:300px;background:#eee2d5}
+.fun-visual{background:#d8cbbd;min-height:300px;display:flex;align-items:center;justify-content:center}
+.fun-visual img{display:block;width:100%;height:340px;object-fit:contain;object-position:center}
+.fun-copy{padding:clamp(20px,3vw,36px);display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.fun-copy h5{font:italic 400 clamp(27px,3.4vw,43px)/1.1 Georgia,serif;margin:13px 0 12px}
+.fun-copy p{font-size:16px;line-height:1.55;margin:0 0 16px}.fun-copy small{color:#865265;line-height:1.5}
+.fun-pagination{display:flex;align-items:center;gap:18px;margin-top:24px;font-size:12px;font-weight:bold;letter-spacing:.1em}
+.fun-pagination button{border:1px solid #a13e4d;background:transparent;color:#a13e4d;cursor:pointer;font-size:24px;width:43px;height:43px}
+.fun-pagination button:hover{background:#a13e4d;color:white}
+@media(max-width:750px){.fun-selector{grid-template-columns:repeat(2,1fr)}.fun-stage{grid-template-columns:1fr}.fun-visual{min-height:180px}.fun-visual img{height:220px}.fun-copy{padding:20px}.gatefold:has(.fun-room) .gatefold-right{width:100%;padding:16px}}
+
+/* ON SET / real production multiview */
+.onset-room[hidden]{display:none!important}.onset-room{position:fixed;inset:0;z-index:3000;background:#17191d;color:#e9e6df;overflow:auto;padding:24px clamp(18px,4vw,70px) 28px;font-family:Arial,Helvetica,sans-serif}.onset-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #4d4e50;padding-bottom:17px}.onset-eyebrow,.onset-side-tag{font-size:11px;letter-spacing:.22em;color:#aeb0b0}.onset-head h2{font-size:clamp(38px,5vw,68px);line-height:1;margin:8px 0 4px;font-weight:900;letter-spacing:-.07em}.onset-red{color:#ad334c;font-size:.65em}.onset-head p{font-size:13px;color:#bbb}.onset-head button{background:#ad334c;color:white;border:0;padding:15px 21px;font-weight:800;cursor:pointer}.onset-switcher{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0}.onset-switcher button{border:1px solid #666;background:#292b2f;color:#e9e6df;padding:15px 10px;font-weight:800;letter-spacing:.08em;cursor:pointer}.onset-switcher button.active{background:#9e3047;border-color:#9e3047}.onset-console{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(310px,1fr);gap:16px}.onset-feed-area{background:#08090b;border:9px solid #35383d;box-shadow:0 12px 30px #0008;min-width:0}.onset-feed-title,.onset-feed-foot{display:flex;justify-content:space-between;gap:8px;padding:12px 14px;font-size:11px;font-weight:800;letter-spacing:.12em}.onset-dot{display:inline-block;background:#d13c51;width:9px;height:9px;border-radius:50%;margin-right:7px;animation:onsetblink 1.2s infinite}.onset-main-feed{height:clamp(270px,49vh,600px);display:flex;align-items:center;justify-content:center;background:#090909;overflow:hidden}.onset-main-feed img,.onset-main-feed video{width:100%;height:100%;object-fit:contain}.onset-feed-foot{color:#d4d1c8}.onset-feed-foot span:first-child{color:#ff6273}.onset-side{border:1px solid #444;padding:14px;background:#222429;min-width:0}.onset-multiview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0 18px;max-height:51vh;overflow:auto}.onset-cam{position:relative;display:flex;flex-direction:column;border:3px solid #484a4e;background:#0c0d0e;color:white;padding:0;cursor:pointer;text-align:left;min-width:0}.onset-cam.active{border-color:#e53f58}.onset-cam img,.onset-cam video{width:100%;height:clamp(70px,9vw,120px);object-fit:contain;background:#090909}.onset-cam span{font-size:10px;font-weight:800;padding:7px;line-height:1.3}.onset-side-copy{border-top:1px solid #555;padding-top:14px;font-size:14px;line-height:1.6}.onset-side-copy strong{font-size:17px}.onset-side-copy p{color:#c6c5c4}.onset-roster{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.onset-roster small{width:100%;color:#aeb0b0;font-size:10px;letter-spacing:.1em}.onset-roster span{padding:6px 10px;background:#373a40;border:1px solid #555;font-size:11px;font-weight:800}.onset-bottom{display:flex;justify-content:space-between;border-top:1px solid #4d4e50;margin-top:20px;padding-top:14px;font-size:10px;letter-spacing:.13em;color:#bdbbb9}@keyframes onsetblink{50%{opacity:.3}}@media(max-width:800px){.onset-console{grid-template-columns:1fr}.onset-multiview{max-height:none}.onset-cam img,.onset-cam video{height:120px}.onset-bottom{display:none}.onset-room{padding:18px}.onset-switcher button{font-size:10px}}
+
+/* V50: ON SET stays inside the physical album sleeve; no fullscreen takeover. */
+.gatefold.onset-mode{width:min(1280px,97vw);height:min(770px,91vh);background:#e9e2d7;overflow:hidden;display:flex}
+.gatefold.onset-mode>.gatefold-left{display:block!important;width:25%;flex:0 0 25%;position:relative;min-width:0}
+.gatefold.onset-mode>.gatefold-right{display:none!important}
+.gatefold.onset-mode>.onset-room{display:flex;flex-direction:column;position:relative;inset:auto;z-index:auto;flex:1;min-width:0;height:100%;padding:16px 18px 18px;overflow:auto;background:#202125}
+.gatefold.onset-mode .onset-head{padding-bottom:9px}
+.gatefold.onset-mode .onset-head h2{font-size:34px;margin:3px 0}
+.gatefold.onset-mode .onset-switcher{grid-template-columns:repeat(2,minmax(0,1fr));margin:12px 0;gap:8px}
+.gatefold.onset-mode .onset-switcher button{padding:10px 7px;font-size:11px}
+.gatefold.onset-mode .onset-console{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;min-height:0;flex:1}
+.gatefold.onset-mode .onset-feed-area{border-width:5px;display:flex;flex-direction:column}
+.gatefold.onset-mode .onset-main-feed{height:clamp(190px,40vh,440px);flex:1;min-height:190px}
+.gatefold.onset-mode .onset-side{padding:9px;display:flex;flex-direction:column}
+.gatefold.onset-mode .onset-multiview{max-height:390px;overflow-y:auto;gap:6px;margin:0 0 10px}
+.gatefold.onset-mode .onset-cam img{height:100px;object-fit:cover;background:#121212}
+.gatefold.onset-mode .onset-cam span{font-size:9px;padding:5px}
+.gatefold.onset-mode .onset-side-copy{font-size:12px;padding-top:8px}
+.gatefold.onset-mode .onset-side-copy strong{font-size:14px}
+.gatefold.onset-mode .onset-side-copy p{margin:5px 0}
+.gatefold.onset-mode .onset-head button{padding:9px 12px;font-size:11px}
+@media(max-width:850px){.gatefold.onset-mode>.gatefold-left{display:none!important}.gatefold.onset-mode>.onset-room{width:100%}.gatefold.onset-mode .onset-console{grid-template-columns:1fr;overflow-y:auto}.gatefold.onset-mode .onset-main-feed{height:230px;flex:none}.gatefold.onset-mode .onset-multiview{max-height:220px}.gatefold.onset-mode .onset-cam img{height:80px}}
+
+/* V51: ON SET uses the entire sleeve for its production console, with no decorative side cover. */
+.gatefold.onset-mode>.gatefold-left{display:none!important}
+.gatefold.onset-mode>.onset-room{width:100%;flex:1}
+/* Vertical video fills the same screen as photos; horizontal videos retain their original framing. */
+.gatefold.onset-mode .onset-main-feed video{object-fit:cover;object-position:center}
+.gatefold.onset-mode .onset-main-feed img{object-fit:contain}
+.gatefold.onset-mode .onset-main-feed{background:#0b0b0b}
+.gatefold.onset-mode .onset-cam img{object-fit:cover}
+
+/* V52: media-sequence arrows and balanced still-photo framing */
+.gatefold.onset-mode .onset-console{position:relative}
+.gatefold.onset-mode .onset-sequence-controls{grid-column:1/-1;grid-row:2;display:flex;align-items:center;justify-content:center;gap:22px;padding:8px 0;color:#bfc0c3;font:700 10px Arial,sans-serif;letter-spacing:.14em}
+.onset-sequence-controls button,.story-sequence-controls button{cursor:pointer;border:1px solid #777;background:#292b2f;color:#fff;font-size:22px;min-width:48px;min-height:40px}
+.onset-sequence-controls button:hover{background:#a3324b}
+.gatefold.onset-mode .onset-side{grid-column:2;grid-row:1}
+.gatefold.onset-mode .onset-feed-area{grid-column:1;grid-row:1}
+.story-sequence-controls{display:flex;align-items:center;justify-content:center;gap:18px;margin:12px 0 16px;font:700 12px Arial,sans-serif;letter-spacing:.1em}
+.story-sequence-controls button{background:#f4eadf;color:#2a2523;border-color:#bbaaa0}
+.story-sequence-controls button:hover{background:#a63c52;color:#fff}
+.gatefold.onset-mode .onset-main-feed img{object-fit:contain!important;max-height:100%;max-width:100%;width:auto;height:100%;margin:auto}
+.gatefold.onset-mode .onset-main-feed video{object-fit:cover!important}
+@media(max-width:850px){.gatefold.onset-mode .onset-side{grid-column:1;grid-row:3}.gatefold.onset-mode .onset-sequence-controls{grid-column:1;grid-row:2}}
+
+/* V53: Portrait stills keep the same visual scale as vertical video sources. */
+.gatefold.onset-mode .onset-main-feed img{height:100%!important;width:auto!important;max-width:54%!important;object-fit:contain!important;flex:none}
+.gatefold.onset-mode .onset-main-feed video{height:100%;width:100%;object-fit:cover!important}
+.contact-sequence-controls{display:flex;align-items:center;justify-content:center;gap:18px;padding:15px 5px;font:700 12px Arial,sans-serif;letter-spacing:.12em}
+.contact-sequence-controls button{min-width:48px;min-height:42px;cursor:pointer;border:1px solid #aaa;background:#eee5db;color:#30282a;font-size:24px}
+.contact-sequence-controls button:hover{background:#a3324b;color:#fff}
+
+/* V54 — Visual identity only. All navigation, media, geometry and animation remain V53. */
+/* Match the physical record player's ivory / charcoal / burgundy / brushed-metal language. */
+.gatefold.onset-mode>.onset-room{
+  background:linear-gradient(145deg,#e7e1d8 0%,#d4cec6 100%);
+  color:#292725;
+  font-family:var(--font);
+}
+.gatefold.onset-mode .onset-head{border-color:#aaa39a}
+.gatefold.onset-mode .onset-head h2{color:#262423;letter-spacing:-.055em}
+.gatefold.onset-mode .onset-eyebrow,.gatefold.onset-mode .onset-side-tag{color:#756e68}
+.gatefold.onset-mode .onset-head p{color:#615a54}
+.gatefold.onset-mode .onset-head button{background:#932c3a;color:#fff}
+.gatefold.onset-mode .onset-switcher button{background:#ede7df;border-color:#b7aea4;color:#302b28}
+.gatefold.onset-mode .onset-switcher button.active{background:#932c3a;border-color:#932c3a;color:#fff}
+.gatefold.onset-mode .onset-feed-area{border-color:#8e8b86;box-shadow:0 9px 25px #211b1833}
+.gatefold.onset-mode .onset-feed-title,.gatefold.onset-mode .onset-feed-foot{background:#262626;color:#f3eee6}
+.gatefold.onset-mode .onset-feed-foot span:first-child{color:#dc6d7e}
+.gatefold.onset-mode .onset-dot{background:#b33b4f}
+.gatefold.onset-mode .onset-side{background:#eee8e0;border-color:#b4aaa0;color:#292725}
+.gatefold.onset-mode .onset-cam{background:#e2dcd4;border-color:#aaa39b;color:#272522}
+.gatefold.onset-mode .onset-cam.active{border-color:#932c3a}
+.gatefold.onset-mode .onset-cam span{background:#eee8e0}
+.gatefold.onset-mode .onset-side-copy{border-color:#b6aca2;color:#292725}
+.gatefold.onset-mode .onset-side-copy p{color:#625a54}
+.gatefold.onset-mode .onset-roster small{color:#786d66}
+.gatefold.onset-mode .onset-roster span{background:#e3d9d0;border-color:#bdb1a6;color:#37312e}
+.gatefold.onset-mode .onset-sequence-controls{color:#5c5550;font-family:var(--font)}
+.gatefold.onset-mode .onset-sequence-controls button{background:#f0ebe4;color:#2a2725;border-color:#aaa198}
+.gatefold.onset-mode .onset-sequence-controls button:hover{background:#932c3a;color:#fff}
+.gatefold.onset-mode .onset-bottom{border-color:#b9aea4;color:#655c55}
+
+/* Gallery: restyle its visual surface as an archival sleeve, not a separate dark app. */
+.gatefold.gallery-mode{background:#e7e1d8}
+.gatefold.gallery-mode .gallery-inside{background:linear-gradient(130deg,#f0ebe3,#ded6cc);color:#282624;font-family:var(--font)}
+.gatefold.gallery-mode .gallery-head{border-bottom:1px solid #b9aea3}
+.gatefold.gallery-mode .gallery-kicker{color:#932c3a}
+.gatefold.gallery-mode .gallery-head h2,.gatefold.gallery-mode .gallery-details h3{font-family:Georgia,"Times New Roman",serif;color:#272523}
+.gatefold.gallery-mode .gallery-head h2 span{color:#932c3a}
+.gatefold.gallery-mode .gallery-head p{color:#655e57}
+.gatefold.gallery-mode .gallery-head>button{background:#932c3a;border-color:#932c3a;color:white}
+.gatefold.gallery-mode .gallery-tab{background:#e6dfd6;border-color:#bfb4a9;color:#302a26}
+.gatefold.gallery-mode .gallery-tab.active{background:#f7f1e9;border-color:#932c3a;box-shadow:inset 0 -3px #932c3a}
+.gatefold.gallery-mode .gallery-tab-mark{background:#932c3a}
+.gatefold.gallery-mode .gallery-tab small{color:#746b64}
+.gatefold.gallery-mode .gallery-screen{border-color:#99938d;outline-color:#b7aba0}
+.gatefold.gallery-mode .gallery-screen-top,.gatefold.gallery-mode .gallery-screen-bottom{background:#e2dbd2;color:#332d29}
+.gatefold.gallery-mode .gallery-rec,.gatefold.gallery-mode .gallery-progress span{background:#932c3a}
+.gatefold.gallery-mode .gallery-thumb.active{border-color:#932c3a}
+.gatefold.gallery-mode .gallery-category,.gatefold.gallery-mode .gallery-extra a{color:#932c3a}
+.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){color:#5b554f}
+.gatefold.gallery-mode .gallery-key-hint{color:#776d65}
+
+/* The other sleeves share the same palette and font roles. */
+.story-book,.fun-room{font-family:var(--font);color:#292725}
+.story-chapters button.active,.fun-selector button.active{background:#932c3a;border-color:#932c3a}
+.story-eyebrow,.fun-tag,.fun-intro>span,.fun-intro h4 span{color:#932c3a}
+.story-filmstrip button.active,.story-sequence-controls button:hover{border-color:#932c3a}
+.story-book-foot span{color:#932c3a}
+.fun-pagination button{border-color:#932c3a;color:#932c3a}
+.fun-pagination button:hover{background:#932c3a;color:#fff}
+.contact-sequence-controls{font-family:var(--font)}
+.contact-sequence-controls button:hover{background:#932c3a}
+
+/* V55: remove the redundant sequence bars; keyboard navigation stays active. */
+.story-sequence-controls,.gatefold.onset-mode .onset-sequence-controls{display:none!important}
+
+/* V59: THE GALLERY — an editorial record-sleeve archive. Scoped to this sleeve only. */
+.gatefold.gallery-mode{width:min(1190px,96vw);height:min(740px,89vh);background:#eee7de;box-shadow:0 28px 85px #17131375;border:1px solid #a99c91}
+.gatefold.gallery-mode .gallery-inside{padding:26px 34px 25px;background:radial-gradient(ellipse at 15% 5%,#fbf6ef 0%,#efe8de 48%,#e4dbd0 100%);color:#292624}
+.gatefold.gallery-mode .gallery-head{align-items:center;border-bottom:1px solid #b4a89e;padding-bottom:15px;margin-bottom:12px}
+.gatefold.gallery-mode .gallery-kicker{font:800 10px/1.4 var(--font);letter-spacing:.2em;color:#853244}
+.gatefold.gallery-mode .gallery-head h2{font:800 clamp(34px,4.4vw,58px)/.96 var(--font);text-transform:uppercase;letter-spacing:-.075em;margin:8px 0 0;color:#272522}
+.gatefold.gallery-mode .gallery-head h2 span{color:#923347}
+.gatefold.gallery-mode .gallery-head p{display:none}
+.gatefold.gallery-mode .gallery-head>button{font:800 11px var(--font);letter-spacing:.08em;background:transparent;color:#332d2b;border:1px solid #b5a9a0;padding:12px 15px}
+.gatefold.gallery-mode .gallery-head>button:hover{background:#853244;color:white}
+.gatefold.gallery-mode .gallery-tabs{grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:2px 0 17px}
+.gatefold.gallery-mode .gallery-tab{height:91px;gap:13px;padding:8px;background:#f3ede5;border:1px solid #c7b9ad;box-shadow:3px 4px 0 #d0c5ba;color:#2a2725;transition:transform .15s,box-shadow .15s}
+.gatefold.gallery-mode .gallery-tab:hover{transform:translateY(-3px);box-shadow:3px 7px 0 #d0c5ba}
+.gatefold.gallery-mode .gallery-tab.active{background:#fffaf2;border:2px solid #893448;box-shadow:4px 5px 0 #893448}
+.gatefold.gallery-mode .gallery-tab img{width:74px;height:73px;object-fit:cover;filter:saturate(.86)}
+.gatefold.gallery-mode .gallery-tab small{font:800 10px var(--font);color:#913548;letter-spacing:.12em;margin-bottom:7px}
+.gatefold.gallery-mode .gallery-tab strong{font:800 clamp(11px,1.2vw,15px)/1.2 var(--font);white-space:normal;letter-spacing:-.02em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.gatefold.gallery-mode .gallery-main{grid-template-columns:minmax(0,1.7fr) minmax(220px,.83fr);gap:22px}
+.gatefold.gallery-mode .gallery-screen{border:6px solid #d3c7bb;outline:1px solid #b5a99e;background:#e7dfd6;box-shadow:5px 5px 0 #d3c7bb}
+.gatefold.gallery-mode .gallery-screen-top,.gatefold.gallery-mode .gallery-screen-bottom{background:#eee7df;color:#35302d;font:800 10px var(--font);letter-spacing:.12em}
+.gatefold.gallery-mode .gallery-screen-content{background:#e9e1d8}
+.gatefold.gallery-mode .gallery-screen-bottom button{color:#332b28;font-size:24px;padding:0 8px}
+.gatefold.gallery-mode .gallery-screen-bottom button:hover{color:#913548}
+.gatefold.gallery-mode .gallery-progress{background:#c5b8ad}
+.gatefold.gallery-mode .gallery-progress span,.gatefold.gallery-mode .gallery-rec{background:#913548}
+.gatefold.gallery-mode .gallery-thumb{width:79px;height:53px;background:#e8ded3;border:2px solid #c6b9ac}
+.gatefold.gallery-mode .gallery-thumb.active{border:3px solid #913548}
+.gatefold.gallery-mode .gallery-details{border-left:1px solid #bdb0a4;padding:18px 3px 10px 23px}
+.gatefold.gallery-mode .gallery-category{font:800 10px var(--font);letter-spacing:.17em;color:#913548}
+.gatefold.gallery-mode .gallery-details h3{font:800 clamp(23px,2.4vw,35px)/1.05 var(--font);letter-spacing:-.055em;margin:15px 0 16px;text-transform:uppercase;color:#292522}
+.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){font:400 13px/1.7 var(--font);color:#59534f}
+@media(max-width:760px){.gatefold.gallery-mode .gallery-inside{padding:16px}.gatefold.gallery-mode .gallery-tabs{gap:5px;margin-bottom:9px}.gatefold.gallery-mode .gallery-tab{height:69px;padding:4px;gap:5px}.gatefold.gallery-mode .gallery-tab img{width:37px;height:57px}.gatefold.gallery-mode .gallery-tab strong{font-size:9px}.gatefold.gallery-mode .gallery-tab small{font-size:8px;margin-bottom:3px}.gatefold.gallery-mode .gallery-main{grid-template-columns:1fr;grid-template-rows:minmax(210px,1fr) auto;gap:10px}.gatefold.gallery-mode .gallery-details{border-left:0;border-top:1px solid #bdb0a4;padding:8px 2px;max-height:110px}.gatefold.gallery-mode .gallery-details h3{font-size:20px;margin:4px 0}.gatefold.gallery-mode .gallery-head h2{font-size:31px}}
+
+/* V60 — GALLERY RECOMPOSED: physical album rack beside the listening/viewing stage. */
+.gatefold.gallery-mode{width:min(1230px,97vw);height:min(790px,91vh)}
+.gatefold.gallery-mode .gallery-inside{display:grid;grid-template-columns:minmax(185px,245px) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:20px 27px;padding:29px 32px;background:linear-gradient(115deg,#f5eee4,#e5d9cb)}
+.gatefold.gallery-mode .gallery-head{grid-column:1/-1;margin:0;padding:0 0 18px;border-bottom:1px solid #aa9c90}
+.gatefold.gallery-mode .gallery-head h2{font-size:clamp(38px,4.4vw,60px);margin:5px 0 0;letter-spacing:-.065em}
+.gatefold.gallery-mode .gallery-tabs{grid-column:1;grid-row:2;display:flex;flex-direction:column;justify-content:flex-start;gap:18px;margin:0;min-height:0;overflow-y:auto;padding:7px 10px 15px 4px;scrollbar-width:thin}
+.gatefold.gallery-mode .gallery-tab{position:relative;display:block;width:100%;height:auto;aspect-ratio:1 / 1.04;padding:0;border:0;background:#241e1d;box-shadow:7px 7px 0 #c7b8a9,9px 9px 0 #8d7c72;overflow:hidden;flex-shrink:0;transform:rotate(-1deg);transition:transform .2s,box-shadow .2s}
+.gatefold.gallery-mode .gallery-tab:nth-child(2){transform:rotate(1.5deg)}
+.gatefold.gallery-mode .gallery-tab:nth-child(3){transform:rotate(-.5deg)}
+.gatefold.gallery-mode .gallery-tab:hover{transform:translateY(-4px) rotate(0);box-shadow:7px 10px 0 #c7b8a9,9px 12px 0 #8d7c72}
+.gatefold.gallery-mode .gallery-tab.active{border:4px solid #92374c;transform:rotate(0);box-shadow:7px 7px 0 #92374c,10px 10px 0 #bda99b;background:#241e1d}
+.gatefold.gallery-mode .gallery-tab img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.92)}
+.gatefold.gallery-mode .gallery-tab span:not(.gallery-tab-mark){position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;justify-content:end;gap:5px;min-height:34%;padding:14px 12px 11px;background:linear-gradient(transparent,#171313e8);color:white;text-align:left}
+.gatefold.gallery-mode .gallery-tab small{color:#f5d4db;font-size:10px;margin:0;letter-spacing:.18em}
+.gatefold.gallery-mode .gallery-tab strong{font-size:clamp(13px,1.6vw,20px);line-height:1.08;letter-spacing:-.025em;color:white;display:block;white-space:normal}
+.gatefold.gallery-mode .gallery-main{grid-column:2;grid-row:2;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:12px;min-height:0}
+.gatefold.gallery-mode .gallery-screen-column{min-height:0;gap:9px}
+.gatefold.gallery-mode .gallery-screen{border:9px solid #302c2a;outline:1px solid #8e8076;background:#282321;box-shadow:7px 7px 0 #c6b8aa;min-height:0}
+.gatefold.gallery-mode .gallery-screen-top,.gatefold.gallery-mode .gallery-screen-bottom{background:#302c2a;color:#f5eee6;min-height:33px}
+.gatefold.gallery-mode .gallery-screen-bottom button{color:#f5eee6}
+.gatefold.gallery-mode .gallery-screen-content{background:#211e1d}
+.gatefold.gallery-mode .gallery-details{border:0;border-top:1px solid #b9a89b;padding:10px 0 0;max-height:145px;overflow-y:auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.7fr);column-gap:24px;align-content:start}
+.gatefold.gallery-mode .gallery-category{grid-column:1;font-size:10px}
+.gatefold.gallery-mode .gallery-details h3{grid-column:1;font-size:clamp(19px,2.1vw,29px);margin:5px 0 0}
+.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){grid-column:2;grid-row:1/span 2;margin:0;font-size:12px;line-height:1.55}
+.gatefold.gallery-mode .gallery-extra{grid-column:2}
+.gatefold.gallery-mode .gallery-thumbs{min-height:49px}
+.gatefold.gallery-mode .gallery-thumb{height:48px;width:72px}
+@media(max-width:720px){.gatefold.gallery-mode .gallery-inside{grid-template-columns:1fr;grid-template-rows:auto 116px minmax(0,1fr);gap:12px;padding:14px}.gatefold.gallery-mode .gallery-head{grid-column:1;padding-bottom:10px}.gatefold.gallery-mode .gallery-head h2{font-size:35px}.gatefold.gallery-mode .gallery-tabs{grid-column:1;grid-row:2;flex-direction:row;gap:12px;overflow-x:auto;overflow-y:hidden;padding:4px 6px 12px}.gatefold.gallery-mode .gallery-tab{width:95px;height:95px;aspect-ratio:1;flex:0 0 95px}.gatefold.gallery-mode .gallery-tab span:not(.gallery-tab-mark){padding:6px;min-height:45%}.gatefold.gallery-mode .gallery-tab strong{font-size:10px}.gatefold.gallery-mode .gallery-tab small{font-size:8px}.gatefold.gallery-mode .gallery-main{grid-column:1;grid-row:3;grid-template-rows:minmax(0,1fr) auto;gap:6px}.gatefold.gallery-mode .gallery-details{max-height:115px;grid-template-columns:1fr;display:block;padding-top:5px}.gatefold.gallery-mode .gallery-details h3{font-size:17px;margin:3px 0}.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){font-size:11px}.gatefold.gallery-mode .gallery-screen{border-width:5px}.gatefold.gallery-mode .gallery-thumb{height:38px;width:56px}}
+
+/* V61: THE EDITING ROOM — editorial edit suite, still ANGIE ON RECORD */
+.gatefold.gallery-mode{width:min(1360px,98vw);height:min(840px,94vh);background:#eee5d9}
+.gatefold.gallery-mode .gallery-inside{display:grid!important;grid-template-columns:250px minmax(0,1fr);grid-template-rows:85px minmax(0,1fr);gap:0;padding:0;background:#eee6dc;color:#292523;overflow:hidden}
+.gatefold.gallery-mode .gallery-head{grid-column:1/-1;grid-row:1;display:flex;align-items:center;justify-content:space-between;margin:0;padding:12px 26px 13px;border-bottom:2px solid #2d2827;background:#e6d9cb}
+.gatefold.gallery-mode .gallery-head h2{font-size:clamp(32px,3.4vw,47px);line-height:1;margin:3px 0 0}
+.gatefold.gallery-mode .gallery-head .gallery-kicker{font-size:9px;letter-spacing:.2em}
+.gatefold.gallery-mode .gallery-head>button{background:#8d344a;color:#fff;border:0;padding:13px 20px}
+.gatefold.gallery-mode .gallery-project-bin{grid-column:1;grid-row:2;display:flex;flex-direction:column;min-height:0;background:#d8c9b9;border-right:2px solid #302b29}
+.gatefold.gallery-mode .gallery-bin-heading,.gatefold.gallery-mode .gallery-stage-label,.gatefold.gallery-mode .gallery-timeline-title{display:flex;justify-content:space-between;align-items:center;font:800 10px var(--font);letter-spacing:.15em;color:#453a36}
+.gatefold.gallery-mode .gallery-bin-heading{padding:19px 16px 12px;border-bottom:1px solid #a89787}
+.gatefold.gallery-mode .gallery-bin-dot{color:#93364d}
+.gatefold.gallery-mode .gallery-tabs{display:flex;flex-direction:column;gap:12px;grid-column:auto;grid-row:auto;margin:0;padding:16px 14px;overflow-y:auto;min-height:0;flex:1}
+.gatefold.gallery-mode .gallery-tab,.gatefold.gallery-mode .gallery-tab:nth-child(2),.gatefold.gallery-mode .gallery-tab:nth-child(3){width:100%;height:145px;aspect-ratio:auto;display:block;position:relative;transform:none;box-shadow:3px 4px 0 #ad9c8d;border:1px solid #8d7d72;background:#25201e;padding:0;overflow:hidden;flex-shrink:0}
+.gatefold.gallery-mode .gallery-tab.active{border:3px solid #92364d;box-shadow:4px 5px 0 #92364d;transform:translateX(2px)}
+.gatefold.gallery-mode .gallery-tab:hover{transform:translateX(2px);box-shadow:4px 5px 0 #ad9c8d}
+.gatefold.gallery-mode .gallery-tab img{width:100%;height:100%;object-fit:cover}
+.gatefold.gallery-mode .gallery-tab span:not(.gallery-tab-mark){position:absolute;left:0;right:0;bottom:0;padding:17px 12px 9px;min-height:60px;background:linear-gradient(transparent,#171313ed);color:white}
+.gatefold.gallery-mode .gallery-tab small{font-size:9px;color:#f2c9d2}
+.gatefold.gallery-mode .gallery-tab strong{font-size:14px;color:white;line-height:1.1}
+.gatefold.gallery-mode .gallery-bin-footer{border-top:1px solid #aa9b8b;padding:16px;font:700 9px/1.7 var(--font);letter-spacing:.13em;color:#65574e}
+.gatefold.gallery-mode .gallery-main{grid-column:2;grid-row:2;display:grid;grid-template-columns:minmax(0,1fr) 230px;grid-template-rows:minmax(0,1fr);gap:0;min-height:0;background:#eee6dc}
+.gatefold.gallery-mode .gallery-screen-column{display:flex;flex-direction:column;min-width:0;min-height:0;padding:15px 16px 14px;gap:0}
+.gatefold.gallery-mode .gallery-stage-label{flex:0 0 auto;padding:3px 3px 10px}
+.gatefold.gallery-mode .gallery-stage-label span:last-child{color:#93364d}
+.gatefold.gallery-mode .gallery-screen{flex:1;min-height:0;border:5px solid #322d2b;outline:0;box-shadow:none;background:#272322;display:flex;flex-direction:column}
+.gatefold.gallery-mode .gallery-screen-top,.gatefold.gallery-mode .gallery-screen-bottom{flex:0 0 33px;min-height:33px;background:#302a28;color:#f3e8de}
+.gatefold.gallery-mode .gallery-screen-content{flex:1;min-height:0;background:#1f1c1b}
+.gatefold.gallery-mode .gallery-screen-bottom button{font-size:24px;color:#f3e8de}
+.gatefold.gallery-mode .gallery-timeline{flex:0 0 114px;min-height:0;margin-top:12px;border:1px solid #b4a293;background:#e3d7c9;display:flex;flex-direction:column;padding:10px 12px 9px}
+.gatefold.gallery-mode .gallery-timeline-title{flex:0 0 18px;font-size:9px;margin-bottom:7px}
+.gatefold.gallery-mode .gallery-thumbs{display:flex;overflow-x:auto;gap:8px;flex:1;min-height:0;padding:0 1px 3px}
+.gatefold.gallery-mode .gallery-thumb{width:91px;height:61px;flex:0 0 91px;border:2px solid #b4a394;background:#e2d8cd}
+.gatefold.gallery-mode .gallery-thumb.active{border:3px solid #92364d}
+.gatefold.gallery-mode .gallery-details{grid-column:2;grid-row:1;display:block;max-height:none;overflow-y:auto;border:0;border-left:1px solid #b3a394;padding:25px 17px 15px;background:#e8dcd0}
+.gatefold.gallery-mode .gallery-category{font:800 10px var(--font);letter-spacing:.14em;color:#93364d}
+.gatefold.gallery-mode .gallery-details h3{font:800 clamp(19px,2vw,28px)/1.12 var(--font);margin:15px 0 20px;letter-spacing:-.045em;color:#292523;text-transform:uppercase}
+.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){font:400 12px/1.7 var(--font);color:#514843;margin:0 0 14px}
+.gatefold.gallery-mode .gallery-extra{display:block}
+@media(max-width:850px){.gatefold.gallery-mode .gallery-inside{grid-template-columns:130px minmax(0,1fr);grid-template-rows:70px minmax(0,1fr)}.gatefold.gallery-mode .gallery-main{grid-template-columns:minmax(0,1fr)}.gatefold.gallery-mode .gallery-details{display:none}.gatefold.gallery-mode .gallery-tab,.gatefold.gallery-mode .gallery-tab:nth-child(2),.gatefold.gallery-mode .gallery-tab:nth-child(3){height:105px}.gatefold.gallery-mode .gallery-tab strong{font-size:10px}.gatefold.gallery-mode .gallery-tabs{padding:9px;gap:10px}.gatefold.gallery-mode .gallery-head{padding:10px 14px}.gatefold.gallery-mode .gallery-head h2{font-size:29px}.gatefold.gallery-mode .gallery-bin-heading{padding:10px;font-size:8px}.gatefold.gallery-mode .gallery-bin-footer{font-size:8px;padding:10px}.gatefold.gallery-mode .gallery-screen-column{padding:9px}.gatefold.gallery-mode .gallery-timeline{flex-basis:95px}.gatefold.gallery-mode .gallery-thumb{width:67px;height:45px;flex-basis:67px}}
+@media(max-width:480px){.gatefold.gallery-mode .gallery-inside{grid-template-columns:90px minmax(0,1fr)}.gatefold.gallery-mode .gallery-tab,.gatefold.gallery-mode .gallery-tab:nth-child(2),.gatefold.gallery-mode .gallery-tab:nth-child(3){height:85px}.gatefold.gallery-mode .gallery-tab span:not(.gallery-tab-mark){padding:10px 4px 5px;min-height:45px}.gatefold.gallery-mode .gallery-tab strong{font-size:9px}.gatefold.gallery-mode .gallery-bin-footer{display:none}.gatefold.gallery-mode .gallery-timeline{flex-basis:86px}.gatefold.gallery-mode .gallery-stage-label{font-size:8px}}
+
+/* V62 — Gallery console: large cinematic monitor + three film-strip project screens */
+.gatefold.gallery-mode .gallery-inside{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:70px minmax(0,1fr) 188px!important;gap:0!important;padding:0!important;background:radial-gradient(circle at 45% 0%,#f8f1e7,#e3d6c9 85%)!important;color:#2b2625;overflow:hidden!important}
+.gatefold.gallery-mode .gallery-head{grid-column:1!important;grid-row:1!important;background:#eee4d9!important;border-bottom:1px solid #b8a79c!important;padding:8px 24px!important}
+.gatefold.gallery-mode .gallery-head h2{font-size:34px!important;letter-spacing:-.05em!important}.gatefold.gallery-mode .gallery-head .gallery-kicker{color:#8e3c51}
+.gatefold.gallery-mode .gallery-main{grid-column:1!important;grid-row:2!important;display:flex!important;flex-direction:column!important;min-height:0!important;background:transparent!important;padding:14px 30px 7px!important;gap:5px!important}
+.gatefold.gallery-mode .gallery-screen-column{flex:1!important;min-height:0!important;padding:0!important;gap:0!important;position:relative}
+.gatefold.gallery-mode .gallery-stage-label{position:absolute;z-index:2;top:12px;left:16px;right:16px;color:#f1e6db!important;pointer-events:none;font-size:9px!important;text-shadow:0 1px 5px #211916}
+.gatefold.gallery-mode .gallery-stage-label span:last-child{color:#ed9baa!important}
+.gatefold.gallery-mode .gallery-screen{flex:1!important;min-height:0!important;border:11px solid #39312f!important;border-radius:20px 20px 7px 7px!important;box-shadow:0 5px 0 #7b6860,0 13px 26px #30201c45,inset 0 0 0 2px #65544d!important;overflow:hidden!important;background:#201c1c!important}
+.gatefold.gallery-mode .gallery-screen-top{flex:0 0 29px!important;min-height:29px!important;background:#2d2526!important;color:#f0e3d7!important;font-size:9px!important;padding:0 17px!important}
+.gatefold.gallery-mode .gallery-screen-content{flex:1!important;min-height:0!important;background:#191717!important}
+.gatefold.gallery-mode .gallery-screen-content .gallery-photo-mat img{max-height:100%!important;max-width:100%!important;object-fit:contain!important}
+.gatefold.gallery-mode .gallery-screen-bottom{flex:0 0 34px!important;min-height:34px!important;background:#302727!important;color:#f1e5da!important}
+.gatefold.gallery-mode .gallery-screen-bottom button{font-size:24px!important;color:#f4e9df!important;width:36px!important}
+.gatefold.gallery-mode .gallery-screen-bottom button:hover{background:#913e54!important}
+.gatefold.gallery-mode .gallery-timeline{display:none!important}
+.gatefold.gallery-mode .gallery-details{display:flex!important;flex:0 0 auto!important;max-height:68px!important;min-height:0!important;overflow:hidden!important;align-items:center!important;gap:14px!important;border:0!important;padding:8px 8px 0!important;background:transparent!important}
+.gatefold.gallery-mode .gallery-details .gallery-category{font-size:9px!important;white-space:nowrap!important;color:#953c52!important}
+.gatefold.gallery-mode .gallery-details h3{font-size:17px!important;line-height:1.1!important;margin:0!important;white-space:nowrap!important;text-transform:none!important;letter-spacing:-.025em!important}
+.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){font-size:11px!important;line-height:1.3!important;margin:0!important;overflow:hidden!important;display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.gatefold.gallery-mode .gallery-details .gallery-extra{display:none!important}
+.gatefold.gallery-mode .gallery-project-bin{grid-column:1!important;grid-row:3!important;display:flex!important;flex-direction:column!important;background:linear-gradient(180deg,#cbbcaf,#bba89a)!important;border:0!important;border-top:8px solid #55423e!important;box-shadow:inset 0 5px 0 #e4d5c9!important;padding:8px 27px 12px!important;min-height:0!important}
+.gatefold.gallery-mode .gallery-bin-heading{display:none!important}.gatefold.gallery-mode .gallery-bin-footer{display:none!important}
+.gatefold.gallery-mode .gallery-tabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:13px!important;padding:0!important;margin:0!important;overflow:visible!important;flex:1!important;min-height:0!important;align-items:stretch!important}
+.gatefold.gallery-mode .gallery-tab,.gatefold.gallery-mode .gallery-tab:nth-child(2),.gatefold.gallery-mode .gallery-tab:nth-child(3){width:100%!important;height:100%!important;min-height:0!important;aspect-ratio:auto!important;display:block!important;position:relative!important;transform:none!important;border:6px solid #332c2b!important;border-radius:4px!important;box-shadow:0 3px 0 #827064!important;background:#242020!important;overflow:hidden!important;padding:0!important}
+.gatefold.gallery-mode .gallery-tab:before{content:'';position:absolute;inset:0 0 auto;height:8px;z-index:1;background:repeating-linear-gradient(90deg,#1d1918 0 10px,#6a5950 10px 14px,#1d1918 14px 25px)}
+.gatefold.gallery-mode .gallery-tab img{width:100%!important;height:100%!important;object-fit:cover!important;opacity:.9;filter:saturate(.83)}
+.gatefold.gallery-mode .gallery-tab span:not(.gallery-tab-mark){position:absolute!important;bottom:0!important;left:0!important;right:0!important;min-height:0!important;height:auto!important;padding:8px 9px!important;background:#eee1d1!important;color:#292523!important;text-align:center!important;display:block!important}
+.gatefold.gallery-mode .gallery-tab small{display:none!important}.gatefold.gallery-mode .gallery-tab strong{color:#2b2524!important;font-family:var(--font)!important;font-size:clamp(11px,1.2vw,16px)!important;line-height:1.15!important;text-transform:none!important;letter-spacing:-.01em!important}
+.gatefold.gallery-mode .gallery-tab.active,.gatefold.gallery-mode .gallery-tab.active:nth-child(2),.gatefold.gallery-mode .gallery-tab.active:nth-child(3){border-color:#8c344b!important;box-shadow:0 0 0 2px #e9d4cb,0 4px 0 #8c344b!important;transform:translateY(-3px)!important}
+.gatefold.gallery-mode .gallery-tab:hover{transform:translateY(-3px)!important}
+@media(max-width:700px){.gatefold.gallery-mode .gallery-inside{grid-template-rows:58px minmax(0,1fr) 145px!important}.gatefold.gallery-mode .gallery-head{padding:7px 12px!important}.gatefold.gallery-mode .gallery-head h2{font-size:27px!important}.gatefold.gallery-mode .gallery-main{padding:10px 12px 4px!important}.gatefold.gallery-mode .gallery-project-bin{padding:7px 8px!important}.gatefold.gallery-mode .gallery-tabs{gap:5px!important}.gatefold.gallery-mode .gallery-tab,.gatefold.gallery-mode .gallery-tab:nth-child(2),.gatefold.gallery-mode .gallery-tab:nth-child(3){border-width:3px!important}.gatefold.gallery-mode .gallery-tab span:not(.gallery-tab-mark){padding:5px 3px!important}.gatefold.gallery-mode .gallery-tab strong{font-size:10px!important}.gatefold.gallery-mode .gallery-details{max-height:54px!important;gap:7px!important}.gatefold.gallery-mode .gallery-details h3{font-size:13px!important}.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){display:none!important}.gatefold.gallery-mode .gallery-screen{border-width:6px!important;border-radius:10px 10px 3px 3px!important}}
+
+/* V63: breathable film-editing console; preserve sleeve behavior and navigation */
+.gatefold.gallery-mode .gallery-inside{grid-template-rows:84px minmax(460px,1fr) 224px!important;overflow-y:auto!important;align-content:start!important}
+.gatefold.gallery-mode .gallery-head{padding:14px 32px!important}
+.gatefold.gallery-mode .gallery-main{padding:23px 38px 19px!important;gap:17px!important}
+.gatefold.gallery-mode .gallery-screen-column{min-height:390px!important}
+.gatefold.gallery-mode .gallery-screen{border-width:9px!important}
+.gatefold.gallery-mode .gallery-stage-label{display:none!important}
+.gatefold.gallery-mode .gallery-screen-top{min-height:39px!important;flex-basis:39px!important;padding:0 22px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:24px!important;font-size:11px!important}
+.gatefold.gallery-mode .gallery-screen-top span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:72%}
+.gatefold.gallery-mode .gallery-screen-top span:last-child{flex:none;white-space:nowrap}
+.gatefold.gallery-mode .gallery-screen-bottom{min-height:43px!important;flex-basis:43px!important;gap:12px!important;padding:0 14px!important}
+.gatefold.gallery-mode .gallery-details{max-height:none!important;min-height:80px!important;padding:0 8px!important;display:grid!important;grid-template-columns:170px 1fr!important;column-gap:20px!important;row-gap:5px!important;align-items:start!important}
+.gatefold.gallery-mode .gallery-details .gallery-category{grid-column:1!important;grid-row:1/3!important;white-space:normal!important;font-size:10px!important;line-height:1.6!important;padding-top:3px!important}
+.gatefold.gallery-mode .gallery-details h3{grid-column:2!important;font-size:19px!important;white-space:normal!important}
+.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){grid-column:2!important;display:block!important;-webkit-line-clamp:unset!important;overflow:visible!important;font-size:12px!important;line-height:1.5!important}
+.gatefold.gallery-mode .gallery-project-bin{padding:16px 38px 20px!important;border-top-width:7px!important}
+.gatefold.gallery-mode .gallery-tabs{gap:22px!important}
+.gatefold.gallery-mode .gallery-tab,.gatefold.gallery-mode .gallery-tab:nth-child(2),.gatefold.gallery-mode .gallery-tab:nth-child(3){border-width:8px!important;border-image:none!important}
+.gatefold.gallery-mode .gallery-tab:before{height:14px!important;background:repeating-linear-gradient(90deg,#2d2525 0 12px,#c6afa1 12px 18px,#2d2525 18px 31px)!important}
+.gatefold.gallery-mode .gallery-tab:after{content:'';position:absolute;z-index:1;top:14px;bottom:37px;left:0;right:0;pointer-events:none;border-left:8px solid #2d2525;border-right:8px solid #2d2525;opacity:.8}
+.gatefold.gallery-mode .gallery-tab span:not(.gallery-tab-mark){padding:10px!important}
+@media(max-width:700px){.gatefold.gallery-mode .gallery-inside{grid-template-rows:65px minmax(400px,1fr) 155px!important}.gatefold.gallery-mode .gallery-main{padding:12px 12px 10px!important;gap:10px!important}.gatefold.gallery-mode .gallery-screen-column{min-height:290px!important}.gatefold.gallery-mode .gallery-details{grid-template-columns:1fr!important;gap:3px!important}.gatefold.gallery-mode .gallery-details .gallery-category,.gatefold.gallery-mode .gallery-details h3,.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){grid-column:1!important;grid-row:auto!important}.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){font-size:10px!important;display:-webkit-box!important;-webkit-line-clamp:2!important;overflow:hidden!important}.gatefold.gallery-mode .gallery-project-bin{padding:10px!important}.gatefold.gallery-mode .gallery-tabs{gap:7px!important}.gatefold.gallery-mode .gallery-tab,.gatefold.gallery-mode .gallery-tab:nth-child(2),.gatefold.gallery-mode .gallery-tab:nth-child(3){border-width:4px!important}.gatefold.gallery-mode .gallery-tab:after{border-left-width:4px;border-right-width:4px}}
+
+/* V64: fix gallery title/description overlap; keep film-console geometry */
+.gatefold.gallery-mode .gallery-inside{grid-template-rows:84px minmax(490px,auto) 224px!important;}
+.gatefold.gallery-mode .gallery-main{min-height:490px!important;grid-template-rows:minmax(360px,auto) auto!important;align-content:start!important;}
+.gatefold.gallery-mode .gallery-details{position:relative!important;max-height:none!important;min-height:104px!important;overflow:visible!important;z-index:2!important;padding:16px 8px 12px!important;align-self:start!important;box-sizing:border-box!important;}
+.gatefold.gallery-mode .gallery-details h3{margin:0!important;line-height:1.25!important;}
+.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){margin:0!important;line-height:1.55!important;}
+.gatefold.gallery-mode .gallery-project-bin{position:relative!important;z-index:1!important;}
+@media(max-width:700px){.gatefold.gallery-mode .gallery-main{min-height:490px!important}.gatefold.gallery-mode .gallery-details{min-height:115px!important;padding:10px 5px!important}}
+
+/* V65: prevent description from touching the film rack; no change to navigation or media. */
+.gatefold.gallery-mode .gallery-inside{
+  grid-template-rows:84px auto 224px!important;
+  overflow-y:auto!important;
+  align-content:start!important;
+}
+.gatefold.gallery-mode .gallery-main{
+  display:flex!important;
+  flex-direction:column!important;
+  min-height:0!important;
+  height:auto!important;
+  gap:0!important;
+  padding:22px 38px 26px!important;
+  overflow:visible!important;
+}
+.gatefold.gallery-mode .gallery-screen-column{
+  flex:none!important;
+  height:clamp(340px,45vw,560px)!important;
+  min-height:0!important;
+  margin-bottom:22px!important;
+}
+.gatefold.gallery-mode .gallery-details{
+  flex:none!important;
+  display:grid!important;
+  grid-template-columns:170px minmax(0,1fr)!important;
+  grid-template-rows:auto auto!important;
+  gap:6px 20px!important;
+  min-height:0!important;
+  height:auto!important;
+  max-height:none!important;
+  padding:0 8px 5px!important;
+  margin:0!important;
+  overflow:visible!important;
+  position:static!important;
+  align-self:stretch!important;
+}
+.gatefold.gallery-mode .gallery-details .gallery-category{grid-column:1!important;grid-row:1/3!important}
+.gatefold.gallery-mode .gallery-details h3{grid-column:2!important;grid-row:1!important;margin:0!important;line-height:1.3!important}
+.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){grid-column:2!important;grid-row:2!important;margin:0!important;line-height:1.55!important;max-width:72ch!important}
+.gatefold.gallery-mode .gallery-project-bin{position:relative!important;margin-top:0!important}
+.gatefold.gallery-mode .gallery-video-mat{position:relative!important}
+.gatefold.gallery-mode .gallery-episode-overlay{
+  position:absolute;top:14px;left:16px;z-index:3;
+  background:linear-gradient(90deg,rgba(22,18,20,.9),rgba(22,18,20,.64));
+  color:#fff6ee;padding:9px 15px;border-left:3px solid #b44c65;
+  font:700 clamp(12px,1.2vw,16px)/1.3 var(--font);
+  letter-spacing:.02em;pointer-events:none;max-width:calc(100% - 36px);
+}
+@media(max-width:700px){
+ .gatefold.gallery-mode .gallery-inside{grid-template-rows:65px auto 155px!important}
+ .gatefold.gallery-mode .gallery-main{padding:14px 12px 22px!important}
+ .gatefold.gallery-mode .gallery-screen-column{height:340px!important;margin-bottom:17px!important}
+ .gatefold.gallery-mode .gallery-details{grid-template-columns:1fr!important;gap:6px!important;padding:0 4px 8px!important}
+ .gatefold.gallery-mode .gallery-details .gallery-category,.gatefold.gallery-mode .gallery-details h3,.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){grid-column:1!important;grid-row:auto!important}
+}
+
+/* V66: gallery layout with independent rows; no overlapping layers */
+.gatefold.gallery-mode .gallery-inside{display:flex!important;flex-direction:column!important;height:100%!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;align-content:unset!important;}
+.gatefold.gallery-mode .gallery-head{flex:0 0 auto!important;min-height:80px!important;}
+.gatefold.gallery-mode .gallery-main{display:flex!important;flex:0 0 auto!important;flex-direction:column!important;position:relative!important;grid-row:auto!important;grid-column:auto!important;min-height:0!important;height:auto!important;overflow:visible!important;padding:22px 36px 26px!important;gap:0!important;}
+.gatefold.gallery-mode .gallery-screen-column{flex:0 0 auto!important;height:clamp(390px,45vw,555px)!important;min-height:0!important;margin:0 0 24px!important;}
+.gatefold.gallery-mode .gallery-details{display:grid!important;position:relative!important;flex:0 0 auto!important;align-self:stretch!important;grid-template-columns:155px minmax(0,1fr)!important;grid-template-rows:auto auto!important;gap:5px 22px!important;width:100%!important;height:auto!important;min-height:105px!important;max-height:none!important;overflow:visible!important;padding:13px 8px 18px!important;margin:0!important;box-sizing:border-box!important;background:transparent!important;z-index:auto!important;}
+.gatefold.gallery-mode .gallery-details .gallery-category{grid-column:1!important;grid-row:1/3!important;align-self:start!important;white-space:normal!important;}
+.gatefold.gallery-mode .gallery-details h3{grid-column:2!important;grid-row:1!important;position:static!important;display:block!important;margin:0!important;padding:0!important;line-height:1.25!important;}
+.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){grid-column:2!important;grid-row:2!important;position:static!important;display:block!important;margin:0!important;padding:0!important;line-height:1.55!important;max-width:76ch!important;overflow:visible!important;}
+.gatefold.gallery-mode .gallery-project-bin{position:relative!important;flex:0 0 208px!important;grid-row:auto!important;grid-column:auto!important;min-height:208px!important;max-height:none!important;z-index:auto!important;margin:0!important;padding:17px 35px 22px!important;box-sizing:border-box!important;}
+.gatefold.gallery-mode .gallery-tabs{height:100%!important;min-height:0!important;gap:20px!important;}
+.gatefold.gallery-mode .gallery-tab,.gatefold.gallery-mode .gallery-tab:nth-child(2),.gatefold.gallery-mode .gallery-tab:nth-child(3){min-height:0!important;}
+.gatefold.gallery-mode .gallery-tab span:not(.gallery-tab-mark){position:absolute!important;bottom:0!important;left:0!important;right:0!important;background:linear-gradient(0deg,rgba(23,17,18,.93),rgba(23,17,18,.64) 70%,transparent)!important;padding:19px 8px 11px!important;color:#fff4eb!important;z-index:2!important;}
+.gatefold.gallery-mode .gallery-tab strong{color:#fff4eb!important;font-size:clamp(12px,1.35vw,18px)!important;text-shadow:0 1px 3px #241719!important;}
+@media(max-width:700px){.gatefold.gallery-mode .gallery-head{min-height:65px!important}.gatefold.gallery-mode .gallery-main{padding:12px 13px 19px!important}.gatefold.gallery-mode .gallery-screen-column{height:350px!important;margin-bottom:16px!important}.gatefold.gallery-mode .gallery-details{grid-template-columns:1fr!important;grid-template-rows:auto auto auto!important;min-height:120px!important;gap:4px!important;padding:8px 2px 13px!important}.gatefold.gallery-mode .gallery-details .gallery-category,.gatefold.gallery-mode .gallery-details h3,.gatefold.gallery-mode .gallery-details>p:not(.gallery-key-hint){grid-column:1!important;grid-row:auto!important}.gatefold.gallery-mode .gallery-project-bin{flex-basis:165px!important;min-height:165px!important;padding:10px 9px 15px!important}.gatefold.gallery-mode .gallery-tabs{gap:8px!important}.gatefold.gallery-mode .gallery-tab strong{font-size:11px!important}}
+
+/* V67: ONLY match The Gallery sleeve's outside dimensions to the other album sleeves.
+   The Gallery content retains its own internal scroll; all media and behavior unchanged. */
+.gatefold.gallery-mode{width:min(1160px,94vw)!important;height:min(680px,81vh)!important;}
+@media(max-width:700px){.gatefold.gallery-mode{width:96vw!important;height:75vh!important;}}
+
+/* V70: small layout refinements only. No changes to controls, animations, or media. */
+/* Keep the Now Playing divider below the turntable's lower edge. */
+.now-playing-panel{bottom:3px!important;padding-top:8px!important;width:195px!important;max-width:22vw!important}
+@media(max-width:760px){.now-playing-panel{bottom:2px!important;width:145px!important;max-width:38vw!important}}
+/* Show the upper part of the childhood photo so the face is not clipped. */
+.rack .sleeve:first-child img{object-position:center 12%!important}
+/* Let the two Joint photos fill the screen as far as their aspect ratios allow, without cropping. */
+.gatefold.onset-mode .onset-main-feed img{width:auto!important;height:auto!important;max-width:96%!important;max-height:100%!important;object-fit:contain!important;margin:auto!important}
+
+/* INTRO ONLY: give the opening headline its own column. All album sleeves,
+   player interactions, internal pages, media, and navigation stay unchanged. */
+@media (min-width: 1101px) {
+  .game:not(.opened) .intro {left:5.5%;top:clamp(170px,24vh,285px);width:min(43vw,560px);}
+  .game:not(.opened) .intro-eyebrow {font-size:12px;letter-spacing:.19em;}
+  .game:not(.opened) .intro h1 {font-size:clamp(42px,4.35vw,69px);line-height:1.08;letter-spacing:-.055em;margin:28px 0 34px;}
+  .game:not(.opened) .intro h1 em {display:block;white-space:nowrap;font-style:italic;letter-spacing:-.065em;}
+  .game:not(.opened) .open-button {width:min(100%,460px);padding:22px 28px;font-size:15px;background:#a5273a;}
+  .game:not(.opened) .intro p {font-size:11px;letter-spacing:.14em;margin-top:23px;}
+  .game:not(.opened) .camera-stage {left:calc(50% + 265px);right:auto;width:760px;transform:translateX(-50%);}
+}
+@media (min-width:851px) and (max-width:1100px) {
+  .game:not(.opened) .intro {left:4%;top:215px;width:40%;}
+  .game:not(.opened) .intro h1 {font-size:clamp(33px,4vw,46px);line-height:1.08;}
+  .game:not(.opened) .intro h1 em {display:block;white-space:nowrap;}
+  .game:not(.opened) .open-button {background:#a5273a;width:min(100%,330px);}
+  .game:not(.opened) .camera-stage {left:calc(50% + 215px);right:auto;width:760px;transform:translateX(-50%);}
+}
+
+/* V73 — INTRO CINEMATIC. The closed lid hides all hardware, while a soft,
+   indistinct platter silhouette is visible through the frosted dust cover. */
+.game:not(.opened):not(.opening-lid) .lid {
+  background:linear-gradient(125deg,rgba(220,222,220,.97),rgba(172,175,176,.94) 50%,rgba(193,195,195,.97));
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  box-shadow:0 15px 35px #0005,inset 0 0 38px #fff9;
+  overflow:hidden;
+}
+.game:not(.opened):not(.opening-lid) .lid:before {
+  content:"";position:absolute;width:310px;height:310px;left:100px;top:45px;
+  border-radius:50%;background:radial-gradient(circle,#17171945 0 58%,#17171925 62%,transparent 74%);
+  filter:blur(26px);pointer-events:none;
+}
+.game:not(.opened):not(.opening-lid) .lid-glass{position:absolute;inset:8px;border-color:#ffffff30;z-index:1}
+.game:not(.opened):not(.opening-lid) .lid-logo{color:#fff;text-shadow:0 2px 8px #3338}
+/* The lid is physically in front of the controls; this also prevents clicks
+   on hardware during the closed/centering state. */
+.game:not(.opened):not(.opening-lid) .deck,.game:not(.opened):not(.opening-lid) .needle-area{pointer-events:none}
+.game:not(.opened):not(.opening-lid) .hardware{pointer-events:none}
+/* First move the entire closed player to its central position. */
+.game.centering-player .camera-stage,.game.opening-lid .camera-stage{
+  left:0!important;right:0!important;width:100%!important;transform:none!important;
+  transition:left 1s cubic-bezier(.22,.72,.24,1),transform 1s cubic-bezier(.22,.72,.24,1),width 1s cubic-bezier(.22,.72,.24,1);
+}
+.game:not(.opened) .camera-stage{transition:left 1s cubic-bezier(.22,.72,.24,1),transform 1s cubic-bezier(.22,.72,.24,1),width 1s cubic-bezier(.22,.72,.24,1)}
+/* Only after centering, lift the cover; keep the rest of the player untouched. */
+.game.opening-lid .lid{transform:perspective(800px) rotateX(-79deg);opacity:.65;pointer-events:none}
+.game.opening-lid .camera{top:55px;transform:translateX(-50%) rotateX(15deg) scale(.91)}
+.game.centering-player .intro,.game.opening-lid .intro{opacity:0;pointer-events:none}
+.game.centering-player .browser,.game.opening-lid .browser{opacity:0;pointer-events:none}
+
+
+/* V74: Real closed dust cover. Hardware stays in its original positions,
+   physically below the lid. No changes to layout, photos or controls. */
+.game:not(.opened):not(.opening-lid) .lid {
+  z-index: 65 !important;
+  background: linear-gradient(135deg,
+    rgba(230,231,229,.83) 0%,
+    rgba(195,198,198,.77) 48%,
+    rgba(221,222,220,.85) 100%) !important;
+  backdrop-filter: blur(15px) saturate(.7) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(.7) !important;
+  box-shadow: 0 15px 35px #0005, inset 0 0 30px #fff8 !important;
+}
+.game:not(.opened):not(.opening-lid) .lid::before {
+  opacity:.38;
+}
+.game:not(.opened):not(.opening-lid) .lid-glass {
+  z-index:2;
+}
+.game:not(.opened):not(.opening-lid) .lid-logo {
+  position:relative;
+  z-index:3;
+  color:#fff !important;
+  text-shadow:0 2px 9px #3339;
+}
+/* When opening begins, lid rotates away, revealing the real components. */
+.game.opening-lid .lid {
+  z-index:65 !important;
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
+}
+
+/* Photography: camera playback inside the existing Just for Fun sleeve. */
+.fun-stage[hidden],.fun-camera[hidden]{display:none!important}
+.fun-camera{background:#171717 url('assets/camera_texture.png') center/cover;color:#f4f0e9;border:1px solid #45413d;padding:15px 18px 10px;margin-top:22px;min-width:0;box-shadow:inset 0 0 0 3px #252525}
+.camera-head,.camera-bottom{display:flex;justify-content:space-between;align-items:center;gap:16px;font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.13em}
+.camera-head{padding:2px 4px 12px;color:#dedad4}.camera-model{margin-left:17px;color:#b9b3ac}.camera-red-dot{color:#bd364c;margin-right:6px}.camera-head>span{color:#a7a19c}
+.camera-viewer{height:min(44vh,435px);min-height:255px;position:relative;display:flex;justify-content:center;align-items:center;background:#090909;overflow:hidden;cursor:e-resize;outline:none}
+.camera-viewer:focus-visible{outline:2px solid #bc4355;outline-offset:2px}.camera-main{width:100%;height:100%;object-fit:contain;display:block;user-select:none}
+.camera-corner{position:absolute;width:22px;height:22px;border-color:rgba(255,255,255,.7);border-style:solid;pointer-events:none}.camera-corner.tl{top:15px;left:15px;border-width:2px 0 0 2px}.camera-corner.tr{top:15px;right:15px;border-width:2px 2px 0 0}.camera-corner.bl{bottom:15px;left:15px;border-width:0 0 2px 2px}.camera-corner.br{bottom:15px;right:15px;border-width:0 2px 2px 0}
+.camera-number,.camera-frame-count{position:absolute;bottom:14px;font:700 11px Arial,sans-serif;letter-spacing:.12em;text-shadow:0 1px 6px #000}.camera-number{left:48px}.camera-frame-count{right:48px}
+.camera-bottom{padding:14px 2px 12px}.camera-caption{display:flex;flex-direction:column;gap:5px}.camera-caption span{color:#a9a19a;font-size:10px}.camera-caption strong{font-size:15px;letter-spacing:0;font-weight:500}.camera-controls{display:flex;align-items:center;gap:18px;color:#b7b1a9;font-size:10px}.camera-controls button{width:38px;height:38px;border:1px solid #77706a;background:transparent;color:#f5f0ea;cursor:pointer;font-size:23px}.camera-controls button:hover{background:#9b2d40;border-color:#9b2d40}
+.camera-strip{display:flex;gap:8px;overflow-x:auto;padding:3px 2px 9px;scrollbar-width:thin}.camera-strip button{flex:0 0 84px;height:55px;background:#000;border:2px solid transparent;padding:0;cursor:pointer;opacity:.6}.camera-strip button.active{border-color:#b83c4d;opacity:1}.camera-strip img{width:100%;height:100%;object-fit:cover}.camera-progress{height:2px;background:#484340}.camera-progress div{height:100%;background:#bd4051;width:11.1%;transition:width .2s}.camera-credit{font:9px Arial,sans-serif;letter-spacing:.16em;color:#aaa29a;text-align:right;margin:9px 0 1px}
+@media(max-width:720px){.fun-camera{padding:9px}.camera-head{font-size:9px;flex-wrap:wrap}.camera-head>span{display:none}.camera-model{display:block;margin:6px 0 0}.camera-viewer{min-height:220px;height:35vh}.camera-bottom{flex-wrap:wrap}.camera-controls{width:100%;justify-content:space-between}.camera-strip button{flex-basis:64px;height:45px}}
+
+/* V76: country selection and a compact camera viewer; no swipe or wheel photo navigation. */
+.camera-places{display:flex;gap:7px;flex-wrap:wrap;margin:0 3px 12px}
+.camera-places button{border:1px solid #6e6863;background:#262423;color:#e4dfd7;padding:10px 15px;cursor:pointer;font:700 10px Arial,sans-serif;letter-spacing:.12em;transition:background .18s}
+.camera-places button.active,.camera-places button:hover{background:#a12d42;color:white;border-color:#a12d42}
+.fun-camera .camera-viewer{height:min(38vh,355px);min-height:240px;cursor:default}
+.fun-camera .camera-edge{position:absolute;z-index:5;top:50%;transform:translateY(-50%);width:44px;height:60px;background:#171717a8;color:white;border:1px solid #ffffff77;font:34px Georgia,serif;cursor:pointer}
+.fun-camera .camera-prev{left:12px}.fun-camera .camera-next{right:12px}
+.fun-camera .camera-edge:hover{background:#9c3043}
+.fun-camera .camera-strip{margin-top:12px}
+.fun-camera .camera-credit{margin-top:9px}
+.fun-selector button strong{font-size:clamp(9px,.8vw,12px);letter-spacing:.035em;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:720px){.camera-places button{padding:9px;font-size:9px}.fun-camera .camera-viewer{height:34vh;min-height:210px}.fun-camera .camera-edge{width:35px;height:46px}}
+
+/* V77: Entire photographs stay visible, no crop, with a stable camera screen. */
+.fun-camera .camera-viewer{height:clamp(300px,52vh,570px)!important;min-height:300px!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;background:#0b0b0b!important}
+.fun-camera .camera-main{display:block!important;position:relative!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center center!important;flex:0 0 100%!important}
+.fun-camera .camera-strip{display:grid!important;grid-template-columns:repeat(8,minmax(0,1fr))!important;gap:8px!important;overflow:visible!important;padding:10px 0!important;margin-top:5px!important}
+.fun-camera .camera-strip button{width:100%!important;min-width:0!important;height:clamp(45px,5vw,78px)!important;flex:auto!important;box-sizing:border-box!important;opacity:.8}
+.fun-camera .camera-strip img{width:100%!important;height:100%!important;object-fit:contain!important;background:#090909}
+.fun-camera .camera-places{display:flex!important;flex-wrap:wrap!important;gap:8px!important}
+.fun-camera .camera-places button{min-width:105px!important;max-width:none!important;white-space:nowrap!important;overflow:visible!important;line-height:1.3!important;padding:12px 17px!important}
+.fun-camera .camera-edge{width:38px!important;height:48px!important;opacity:.85}
+.fun-camera .camera-progress{display:none!important}
+@media(max-width:720px){.fun-camera .camera-viewer{height:45vh!important;min-height:250px!important}.fun-camera .camera-strip{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:5px!important}.fun-camera .camera-places button{min-width:0!important;padding:9px 10px!important}}
+
+/* V79: Just for Fun is now a single photography collection. */
+.fun-room.photo-only .fun-intro{margin-bottom:22px!important}
+.fun-room.photo-only .fun-intro p{max-width:760px!important;font-size:clamp(15px,1.35vw,19px)!important;line-height:1.55!important}
+.fun-room.photo-only .fun-camera{display:block!important}
+.fun-room.photo-only .camera-strip{grid-template-columns:repeat(8,minmax(0,1fr))!important}
+@media(max-width:720px){.fun-room.photo-only .camera-strip{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+
+/* V80 / CONTACT MINI-GAME */
+.connect-game{width:100%;max-width:920px;margin:0 auto;padding:22px 0 44px;color:#262321;font-family:Arial,Helvetica,sans-serif}.connect-head{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #bcb1a5;padding-bottom:16px;font-size:11px;font-weight:800;letter-spacing:2px;color:#8e3949}.connect-status{color:#68605b}.connect-game h4{font-family:Georgia,serif;font-size:clamp(38px,5vw,72px);font-style:italic;letter-spacing:-2px;line-height:1.05;margin:25px 0 12px}.connect-game h4 span{color:#a62e43}.connect-hint{font-size:15px;margin:0 0 28px;color:#655b56}.connect-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.connect-choices button{background:#f6eee5;border:1px solid #c7b9ad;color:#262321;min-height:174px;cursor:pointer;text-align:left;padding:19px 16px;display:flex;flex-direction:column;gap:10px;transition:transform .2s,background .2s,border-color .2s}.connect-choices button:hover{transform:translateY(-5px);border-color:#a62e43}.connect-choices button.chosen{background:#a62e43;color:white;border-color:#a62e43}.connect-symbol{font-size:34px;line-height:1}.connect-choices strong{font-size:13px;letter-spacing:1px}.connect-choices small{font-size:12px;line-height:1.35;opacity:.8}.connect-wire{display:flex;align-items:center;margin:30px 8px 20px;gap:8px}.connect-node{border:1px solid #a62e43;color:#a62e43;border-radius:50%;height:47px;min-width:47px;display:grid;place-items:center;font-size:10px;font-weight:800;letter-spacing:1px}.connect-line{height:2px;background:#c9bcb0;flex:1;overflow:hidden}.connect-line i{display:block;width:0;height:100%;background:#a62e43;transition:width .65s ease}.connect-reveal{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .45s,opacity .35s}.connect-reveal-inner{overflow:hidden}.connect-game.connected .connect-reveal{grid-template-rows:1fr;opacity:1}.connect-reveal-inner{background:#242222;color:#fff;padding:0 24px}.connect-game.connected .connect-reveal-inner{padding:25px 24px}.connect-reveal-inner>span{font-size:11px;color:#d9a3a9;letter-spacing:2px;font-weight:800}.connect-reveal h5{font-family:Georgia,serif;font-size:clamp(24px,3vw,42px);font-style:italic;margin:15px 0}.connect-result{line-height:1.55;max-width:550px}.connect-actions{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 14px}.connect-actions button,.connect-actions a{background:#ad3448;color:#fff;border:1px solid #ad3448;padding:14px 16px;text-decoration:none;font-size:12px;font-weight:800;letter-spacing:1px;cursor:pointer}.connect-actions a{background:transparent;border-color:#fff}.connect-note{display:block;color:#c3b9b9;font-size:11px;line-height:1.5}.connect-again{background:transparent;border:0;color:#8d3948;text-decoration:underline;text-underline-offset:4px;cursor:pointer;padding:16px 0;font-size:12px;letter-spacing:1px;font-weight:800}@media(max-width:620px){.connect-choices{grid-template-columns:1fr}.connect-choices button{min-height:100px}.connect-game{padding:10px 0 30px}}
+
+/* V81: Contact sleeve — spacious, readable, responsive layout. */
+.gatefold:has(.connect-game){width:min(1080px,94vw);height:min(760px,90vh)}
+.gatefold:has(.connect-game) .gatefold-left{width:29%;flex:0 0 29%}
+.gatefold:has(.connect-game) .gatefold-right{width:71%;flex:1;min-width:0;padding:28px clamp(24px,3vw,48px);overflow-y:auto;overflow-x:hidden}
+.gatefold:has(.connect-game) .gatefold-right>h3{font-size:clamp(27px,3.1vw,43px);margin:23px 0 9px;line-height:1.1}
+.gatefold:has(.connect-game) .gatefold-right>#folderDescription{max-width:650px;margin-bottom:12px;font-size:14px}
+.gatefold:has(.connect-game) .media-grid{display:block;width:100%;min-width:0;margin:0 0 20px;flex:none}
+.connect-game{box-sizing:border-box;width:100%;max-width:none;min-width:0;margin:0;padding:12px 0 24px}
+.connect-head{font-size:10px;letter-spacing:1.2px;padding-bottom:13px}
+.connect-game h4{font-size:clamp(29px,3vw,43px);margin:19px 0 9px;letter-spacing:-1px}
+.connect-hint{font-size:13px;margin:0 0 19px}
+.connect-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;width:100%}
+.connect-choices button{box-sizing:border-box;width:100%;min-width:0;min-height:166px;height:auto;padding:18px 15px;gap:10px;overflow:visible;word-break:normal;overflow-wrap:break-word}
+.connect-choices strong{font-size:clamp(11px,1.2vw,14px);line-height:1.25;letter-spacing:.5px}
+.connect-choices small{font-size:12px;line-height:1.45}
+.connect-symbol{font-size:29px}
+.connect-wire{margin:25px 2px 24px}
+.connect-reveal-inner{box-sizing:border-box;min-width:0}
+.connect-game.connected .connect-reveal-inner{padding:26px clamp(18px,3vw,34px)}
+.connect-reveal h5{font-size:clamp(24px,2.9vw,37px);line-height:1.1;overflow-wrap:break-word;margin:12px 0}
+.connect-result{font-size:14px;line-height:1.6;overflow-wrap:break-word;margin:0}
+.connect-actions{gap:12px;margin:20px 0 14px}
+.connect-actions button,.connect-actions a{box-sizing:border-box;width:auto!important;height:auto!important;min-height:44px;padding:13px 18px;line-height:1.3;font-size:11px;letter-spacing:.5px;white-space:normal;text-align:center}
+.connect-note{font-size:11px;max-width:530px}
+.connect-again{display:inline-block;padding:15px 0 8px;margin-top:7px;font-size:12px;line-height:1.4}
+@media(max-width:780px){
+ .gatefold:has(.connect-game){width:96vw;height:86vh;top:50%}
+ .gatefold:has(.connect-game) .gatefold-left{display:none}
+ .gatefold:has(.connect-game) .gatefold-right{width:100%;flex:1;padding:23px}
+ .connect-choices button{min-height:152px;padding:14px 11px}
+}
+@media(max-width:500px){
+ .gatefold:has(.connect-game) .gatefold-right{padding:18px}
+ .connect-choices{grid-template-columns:1fr;gap:9px}
+ .connect-choices button{min-height:0;padding:13px 15px;display:grid;grid-template-columns:32px 1fr;column-gap:12px;row-gap:3px;align-items:center}
+ .connect-choices button .connect-symbol{grid-row:span 2;font-size:25px}
+ .connect-choices button strong{font-size:13px}
+ .connect-choices button small{font-size:11px}
+ .connect-wire{margin:18px 2px}
+ .connect-head{font-size:9px}
+ .connect-game h4{font-size:31px}
+}
+
+/* V82 / YOU'VE GOT MAIL — CONTACT */
+.gatefold:has(.mail-game){width:min(1160px,96vw);height:min(790px,92vh)}
+.gatefold:has(.mail-game) .gatefold-left{width:25%;flex:0 0 25%}
+.gatefold:has(.mail-game) .gatefold-right{width:75%;flex:1;min-width:0;overflow-y:auto;overflow-x:hidden;padding:28px clamp(24px,3vw,46px)}
+.gatefold:has(.mail-game) .gatefold-right>h3{font-size:clamp(29px,3vw,44px);line-height:1.1;margin:16px 0 9px}
+.gatefold:has(.mail-game) .media-grid{display:block;width:100%;margin:0;min-width:0}
+.mail-game{font-family:Arial,sans-serif;color:#282421;width:100%;box-sizing:border-box;padding:10px 0 30px}
+.mail-kicker{display:flex;justify-content:space-between;gap:12px;border-top:1px solid #c6b8a8;border-bottom:1px solid #c6b8a8;padding:13px 0;font-size:10px;font-weight:800;letter-spacing:1.3px;color:#953448}
+.mail-workspace{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(210px,.9fr);gap:clamp(20px,3vw,45px);align-items:center;padding:26px 0 12px}
+.mail-compose{display:flex;flex-direction:column;gap:8px;min-width:0}.mail-compose label{font-size:10px;font-weight:800;letter-spacing:1.7px;margin-top:7px}.mail-compose input,.mail-compose textarea{font:15px/1.5 Arial,sans-serif;color:#292323;background:#fffaf3;border:1px solid #c9b8a9;border-radius:0;width:100%;box-sizing:border-box;padding:12px 13px;resize:vertical;min-height:45px}.mail-compose textarea{min-height:118px}.mail-compose input:focus,.mail-compose textarea:focus{outline:2px solid #a22f47;outline-offset:1px}.mail-seal,.mail-send{border:0;background:#a32f47;color:#fff;font:800 12px Arial,sans-serif;letter-spacing:1px;padding:17px 19px;cursor:pointer;text-decoration:none;display:inline-flex;justify-content:space-between;align-items:center;gap:20px;margin-top:9px}.mail-seal:hover,.mail-send:hover{background:#81253a}.mail-error{font-size:12px;color:#a32f47;min-height:16px;margin:0}
+.mail-stage{min-width:0;min-height:290px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;background:#e5d9cb;border:1px solid #d2c2b2;padding:20px 12px;overflow:hidden}.mail-stage:before{content:'';position:absolute;inset:12px;border:1px dashed #c0ad9c;pointer-events:none}.mail-stamp{position:absolute;top:27px;right:28px;border:2px solid #9d4351;color:#9d4351;font:italic bold 21px Georgia,serif;width:49px;height:54px;display:flex;flex-direction:column;justify-content:center;align-items:center;transform:rotate(10deg)}.mail-stamp small{font:700 8px Arial;letter-spacing:1px}.mail-envelope{width:min(245px,87%);aspect-ratio:1.58;position:relative;filter:drop-shadow(0 12px 12px #74635740);transition:transform .65s}.mail-back{position:absolute;inset:0;background:#cdb39e}.mail-front{position:absolute;inset:0;clip-path:polygon(0 0,50% 54%,100% 0,100% 100%,0 100%);background:#f2e5d5;border:1px solid #d3bdab;z-index:3}.mail-flap{position:absolute;inset:0;clip-path:polygon(0 0,100% 0,50% 61%);background:#e8d4c1;transform-origin:top;transition:transform .7s;z-index:5}.mail-letter{position:absolute;inset:12% 10% 8%;background:#fffaf3;text-align:center;display:flex;flex-direction:column;justify-content:center;font:italic bold 19px Georgia,serif;z-index:2;transition:transform .8s}.mail-letter small{font:700 9px Arial;letter-spacing:2px;margin-top:9px}.mail-wax{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);background:#a32f47;color:#f9e9df;border-radius:50%;height:34px;width:34px;display:grid;place-items:center;font:italic 20px Georgia,serif;z-index:6;transition:opacity .3s}.mail-stage-caption{font-size:10px;font-weight:800;letter-spacing:2px;color:#7e625c;margin:23px 0 0}.mail-game.sealed .mail-flap{transform:rotateX(180deg);z-index:1}.mail-game.sealed .mail-letter{transform:translateY(-35%)}.mail-game.sealed .mail-wax{opacity:0}.mail-game.sealed .mail-envelope{transform:translateY(12px) rotate(-4deg)}.mail-finish{margin:18px 0 0;padding:23px 25px;background:#252323;color:#fff}.mail-finish[hidden]{display:none}.mail-finish>span{color:#dfb2b9;font-size:10px;font-weight:800;letter-spacing:2px}.mail-finish h4{font:italic 29px Georgia,serif;margin:13px 0}.mail-finish p{font-size:14px;line-height:1.5}.mail-buttons{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:18px 0}.mail-edit{background:transparent;border:1px solid #ddd;color:#fff;font:800 12px Arial;letter-spacing:1px;padding:16px 18px;cursor:pointer}.mail-finish small{display:block;line-height:1.5;color:#c9bdbd;font-size:11px}
+@media(max-width:850px){.gatefold:has(.mail-game) .gatefold-left{display:none}.gatefold:has(.mail-game) .gatefold-right{width:100%;padding:22px}.mail-workspace{grid-template-columns:1fr}.mail-stage{min-height:225px}.mail-envelope{max-width:210px}}
+
+/* V83 / SONG QUIZ: roomy, responsive, no cropped cards */
+.gatefold:has(.song-quiz){width:min(1200px,96vw);height:min(820px,93vh)}
+.gatefold:has(.song-quiz) .gatefold-left{width:25%;flex:0 0 25%}
+.gatefold:has(.song-quiz) .gatefold-right{width:75%;flex:1;min-width:0;overflow-y:auto;overflow-x:hidden;padding:30px clamp(22px,3.5vw,52px)}
+.gatefold:has(.song-quiz) .gatefold-right>h3{font-size:clamp(30px,3.5vw,50px);line-height:1.05;margin:12px 0}
+.gatefold:has(.song-quiz) .media-grid{display:block;width:100%;margin:0;min-width:0}
+.song-quiz{box-sizing:border-box;width:100%;font-family:Arial,sans-serif;color:#292524;padding:10px 0 25px}
+.song-quiz *{box-sizing:border-box}
+.quiz-top,.quiz-bottom{display:flex;justify-content:space-between;gap:16px;align-items:center;font-size:11px;font-weight:800;letter-spacing:1.5px;color:#9b3449}
+.quiz-top{border-top:1px solid #c9b9ac;padding:16px 0 14px}.quiz-meter{height:3px;background:#d6c8bb}.quiz-meter span{display:block;height:100%;width:0;background:#9d3048;transition:width .3s}
+.quiz-body{min-height:360px;padding:38px 0 22px}.quiz-eyebrow{font-size:11px;letter-spacing:2px;font-weight:800;color:#a1374b}
+.quiz-question h4{font:italic clamp(30px,3.7vw,51px)/1.12 Georgia,serif;margin:15px 0 29px;color:#262323}
+.quiz-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.quiz-option{border:1px solid #c6b8ad;background:#f9f2eb;min-height:91px;display:flex;align-items:center;gap:16px;text-align:left;padding:18px;color:#302b2b;font:700 15px/1.35 Arial,sans-serif;cursor:pointer;transition:background .18s,border-color .18s,transform .18s;overflow-wrap:anywhere}
+.quiz-option:hover,.quiz-option:focus-visible{background:#e9d8d3;border-color:#a3374e;transform:translateY(-2px)}.quiz-letter{color:#a3374e;font:italic 23px Georgia,serif;flex:0 0 22px}.quiz-option-arrow{margin-left:auto;color:#a3374e}
+.quiz-bottom{border-top:1px solid #c9b9ac;padding:15px 0}.quiz-back{border:0;background:transparent;color:#9b3449;font:800 12px Arial;cursor:pointer;padding:10px}
+.quiz-result{display:grid;grid-template-columns:minmax(190px,.8fr) minmax(0,1.2fr);gap:clamp(24px,4vw,52px);align-items:center}
+.quiz-record-area{display:grid;place-items:center;min-width:0}.quiz-record{width:min(100%,280px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:repeating-radial-gradient(circle at center,#161616 0px,#161616 3px,#262626 4px,#121212 6px);box-shadow:14px 17px 25px #1d14142e;animation:quiz-spin 8s linear infinite}.quiz-record-label{width:37%;aspect-ratio:1;border-radius:50%;background:#a33249;border:5px solid #b94c61;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font:800 clamp(10px,1.2vw,15px)/1.25 Arial;letter-spacing:1px}.quiz-record-label small{font-size:8px;margin-top:8px;letter-spacing:1px}@keyframes quiz-spin{to{transform:rotate(360deg)}}
+.quiz-result-copy{min-width:0}.quiz-result-copy h4{font:italic clamp(32px,4vw,54px)/1.08 Georgia,serif;margin:13px 0 5px;overflow-wrap:anywhere}.quiz-artist{margin:0 0 24px;font-size:15px;color:#8b6465}.quiz-result-copy strong{font-size:15px}.quiz-result-copy>p:not(.quiz-artist){font-size:15px;line-height:1.55}.quiz-actions{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}.quiz-listen,.quiz-again{font:800 11px Arial,sans-serif;letter-spacing:1px;text-decoration:none;padding:15px 16px;cursor:pointer}.quiz-listen{background:#a33249;color:#fff}.quiz-again{border:1px solid #a33249;background:transparent;color:#a33249}.quiz-result-copy .quiz-foot{font-size:11px!important;color:#826e6b}
+@media(max-width:850px){.gatefold:has(.song-quiz) .gatefold-left{display:none}.gatefold:has(.song-quiz) .gatefold-right{width:100%;padding:20px}.quiz-body{padding:25px 0}.quiz-options{grid-template-columns:1fr}.quiz-option{min-height:65px}.quiz-result{grid-template-columns:1fr}.quiz-record{max-width:170px}.quiz-result-copy h4{font-size:35px}}
+@media(prefers-reduced-motion:reduce){.quiz-record{animation:none}}
+
+/* V84: quiz layout reset — older gallery rules must not shrink quiz controls */
+.gatefold:has(.song-quiz){width:min(1180px,96vw);height:min(850px,94vh)}
+.gatefold:has(.song-quiz) .gatefold-left{flex:0 0 28%;width:28%}
+.gatefold:has(.song-quiz) .gatefold-right{flex:1;width:auto;min-width:0;padding:26px clamp(22px,3vw,42px);overflow-y:auto}
+.gatefold:has(.song-quiz) .gatefold-right>h3{font-size:clamp(30px,3vw,44px);margin:14px 0 10px}
+.gatefold:has(.song-quiz) .gatefold-right>p{max-width:680px;font-size:14px;line-height:1.6}
+.gatefold:has(.song-quiz) #mediaGrid{display:block;flex:none;width:100%;min-width:0;overflow:visible}
+.gatefold:has(.song-quiz) .song-quiz{width:100%;min-width:0;padding:8px 0 30px}
+.gatefold:has(.song-quiz) .quiz-intro{margin:0 0 30px;padding:22px 0 0;border-top:1px solid #cbb9ae}
+.gatefold:has(.song-quiz) .quiz-intro>span,.gatefold:has(.song-quiz) .quiz-contact span{color:#a33249;font:bold 11px Arial;letter-spacing:2px}
+.gatefold:has(.song-quiz) .quiz-intro h4{font:italic clamp(28px,3vw,40px) Georgia,serif;margin:12px 0 7px}
+.gatefold:has(.song-quiz) .quiz-intro p{font:14px/1.5 Arial;margin:0;color:#5d5350}
+.gatefold:has(.song-quiz) .quiz-body{min-height:0;padding:26px 0 28px}
+.gatefold:has(.song-quiz) .quiz-question h4{font:italic clamp(29px,3.2vw,44px)/1.12 Georgia,serif;margin:14px 0 25px}
+.gatefold:has(.song-quiz) .quiz-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;width:100%}
+.gatefold:has(.song-quiz) .media-grid button.quiz-option{box-sizing:border-box;width:100%;height:auto;min-height:100px;max-width:none;overflow:visible;display:grid;grid-template-columns:28px minmax(0,1fr) 18px;align-items:center;gap:13px;padding:20px 17px;border:1px solid #c6b8ad;background:#faf4ed;color:#302b2b;font:700 15px/1.4 Arial;text-align:left;white-space:normal;word-break:normal;overflow-wrap:normal}
+.gatefold:has(.song-quiz) .media-grid button.quiz-option:hover{background:#ecdcd5;border-color:#a33249}
+.gatefold:has(.song-quiz) .quiz-option>span:nth-child(2){min-width:0}
+.gatefold:has(.song-quiz) .media-grid button.quiz-back,.gatefold:has(.song-quiz) .media-grid button.quiz-again{width:auto;height:auto;min-height:0;overflow:visible}
+.gatefold:has(.song-quiz) .quiz-actions a{font-size:12px;align-self:auto}
+.gatefold:has(.song-quiz) .quiz-contact{display:flex;justify-content:space-between;align-items:center;gap:24px;border-top:1px solid #cbb9ae;margin-top:32px;padding:30px 0 5px}
+.gatefold:has(.song-quiz) .quiz-contact h4{font:italic 28px Georgia,serif;margin:9px 0}
+.gatefold:has(.song-quiz) .quiz-contact p{font:14px/1.5 Arial;margin:0;max-width:370px}
+.gatefold:has(.song-quiz) .quiz-contact a{flex-shrink:0;display:inline-block;background:#a33249;color:white;text-decoration:none;font:bold 12px Arial;letter-spacing:1px;padding:18px 20px;white-space:nowrap;align-self:center}
+@media(max-width:850px){.gatefold:has(.song-quiz) .gatefold-left{display:none}.gatefold:has(.song-quiz) .gatefold-right{width:100%;padding:20px}.gatefold:has(.song-quiz) .quiz-options{grid-template-columns:1fr}.gatefold:has(.song-quiz) .media-grid button.quiz-option{min-height:76px}.gatefold:has(.song-quiz) .quiz-contact{flex-direction:column;align-items:flex-start}.gatefold:has(.song-quiz) .quiz-contact a{align-self:flex-start}}
