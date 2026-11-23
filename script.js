@@ -314,6 +314,19 @@ function renderGallery(){
   button.addEventListener('click',()=>selectGalleryMedia(i));thumbs.append(button);
  });
  const extra=$('galleryExtra');extra.replaceChildren();
+ // Brela final documentary should always be easy to find, not hidden in thumbnails.
+ if(galleryProjectIndex===0){
+   const finalButton=document.createElement('button');
+   finalButton.type='button';finalButton.className='brela-watch-button';
+   finalButton.textContent='▶ WATCH FINAL DOCUMENTARY';
+   finalButton.addEventListener('click',()=>selectGalleryMedia(3));
+   extra.append(finalButton);
+   const backup=document.createElement('a');backup.className='brela-watch-backup';
+   backup.href='https://drive.google.com/file/d/1P98yQs0I2l58uUYiTqTblIdRtmuPpJIP/view';
+   backup.target='_blank';backup.rel='noopener noreferrer';
+   backup.textContent='OPEN VIDEO IN GOOGLE DRIVE ↗';
+   extra.append(backup);
+ }
 }
 $('galleryPrevMedia').addEventListener('click',()=>selectGalleryMedia(galleryMediaIndex-1));
 $('galleryNextMedia').addEventListener('click',()=>selectGalleryMedia(galleryMediaIndex+1));
