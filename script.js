@@ -124,7 +124,7 @@ function renderContactGame(grid){
   {q:'What would you rather collect?',a:[['Passport stamps',[5,3]],['Old photos',[2]],['Handwritten notes',[1,4]],['Stories I can tell forever',[0,2]]]}
  ];
  let step=0;let scores=tracks.map(()=>0);let choices=[];
- grid.innerHTML=`<section class="song-quiz"><div class="quiz-intro"><span>JUST FOR FUN / MY PLAYLIST</span><h4>WHAT SONG ARE YOU?</h4><p>Five questions. One song from my Spotify playlist.</p></div><div class="quiz-top"><span>ANGIE ON RECORD / PERSONALITY TEST</span><span class="quiz-progress-text">01 / 05</span></div><div class="quiz-meter"><span></span></div><div class="quiz-body" aria-live="polite"></div><div class="quiz-bottom"><span>FROM MY TOP SONGS 2025</span><button class="quiz-back" type="button">← BACK</button></div><div class="quiz-contact"><div><span>LET’S KEEP IN TOUCH</span><h4>Have something in mind?</h4><p>Whether it’s a project, an opportunity or just a hello, I’d love to hear from you.</p></div><a href="mailto:angielevy24@gmail.com" aria-label="Email Angie at angielevy24@gmail.com">SEND ME AN EMAIL ↗</a></div></section>`;
+ grid.innerHTML=`<section class="song-quiz"><div class="quiz-intro"><span>JUST FOR FUN / MY PLAYLIST</span><h4>WHAT SONG ARE YOU?</h4><p>Five questions. One song from my Spotify playlist.</p></div><div class="quiz-top"><span>ANGIE ON RECORD / PERSONALITY TEST</span><span class="quiz-progress-text">01 / 05</span></div><div class="quiz-meter"><span></span></div><div class="quiz-body" aria-live="polite"></div><div class="quiz-bottom"><span>FROM MY TOP SONGS 2025</span><button class="quiz-back" type="button">← BACK</button></div><div class="quiz-contact"><div><span>LET’S KEEP IN TOUCH</span><h4>Have something in mind?</h4><p>Whether it’s a project, an opportunity or just a hello, I’d love to hear from you.</p></div><a href="mailto:angielevy24@gmail.com?subject=Hello%20Angie%20-%20Angie%20On%20Record" aria-label="Email Angie at angielevy24@gmail.com">SEND ME AN EMAIL ↗</a><small class="quiz-email-address">TO: angielevy24@gmail.com</small></div></section>`;
  const root=grid.querySelector('.song-quiz'),body=root.querySelector('.quiz-body'),meter=root.querySelector('.quiz-meter span'),progress=root.querySelector('.quiz-progress-text'),back=root.querySelector('.quiz-back');
  function render(){
   progress.textContent=step<5?String(step+1).padStart(2,'0')+' / 05':'YOUR RESULT';meter.style.width=(step<5?(step/5*100):100)+'%';back.hidden=step===0;
@@ -218,7 +218,7 @@ setStep(1);
 /* 13. THE GALLERY ONLY: custom video/photo viewer based on the earlier film-strip layout.
    This does not change the turntable, record loading, other sleeves or audio controls. */
 const galleryProjects=[
- {title:'Slice of Life — Brela',category:'DOCUMENTARY / GROUP WORK',text:'A group project for IE University about Brela, a bakery in Madrid. We followed the production process, filmed interviews and captured the details that make the place special. Group members: Angie Levy, Jimena Berecochea, Renata Abaroa, Anika Niemann, Valentina Cacho, Federica Yanes and Julieta Vaca Diez.',items:[{kind:'photo',src:'brela.jpg'},{kind:'photo',src:'brela_behind_scenes.jpg'},{kind:'video',src:'brela_clip.mp4',title:'Behind the scenes at Brela',silent:true}]},
+ {title:'Slice of Life — Brela',category:'DOCUMENTARY / GROUP WORK',text:'A group project for IE University about Brela, a bakery in Madrid. We followed the production process, filmed interviews and captured the details that make the place special. Group members: Angie Levy, Jimena Berecochea, Renata Abaroa, Anika Niemann, Valentina Cacho, Federica Yanes and Julieta Vaca Diez.',items:[{kind:'photo',src:'brela.jpg'},{kind:'photo',src:'brela_behind_scenes.jpg'},{kind:'video',src:'brela_clip.mp4',title:'Behind the scenes at Brela',silent:true},{kind:'video',src:'https://drive.google.com/file/d/1P98yQs0I2l58uUYiTqTblIdRtmuPpJIP/preview',title:'Slice of Life — Brela · Final documentary',driveEmbed:true}]},
  {title:'Lucky Latin!',category:'BOARD GAME / GROUP PROJECT',text:'A group project for IE University: a Latin American bingo game celebrating the places, details and everyday moments that feel like home. From the packaging to the cards, we designed and tested it together. Group members: Angie Levy, Jimena Berecochea, Renata Abaroa, Anika Niemann, Valentina Cacho, Federica Yanes and Julieta Vaca Diez.',items:[{kind:'photo',src:'lucky_box.jpg'},{kind:'photo',src:'lucky_cards.jpg'},{kind:'photo',src:'lucky_playing.jpg'}]},
  {title:'Háblalo Einstein',category:'PODCAST / HOST',text:'The podcast I co-hosted with Leeya Etaat at Instituto Alberto Einstein in Panama. Each episode starts with a conversation and a story worth sharing.',items:[{kind:'video',src:'podcast-piloto.mp4',title:'01 · Episodio Piloto'},{kind:'video',src:'podcast-dia-del-padre.mp4',title:'02 · Día del Padre'},{kind:'video',src:'podcast-vacaciones.mp4',title:'03 · Vacaciones'},{kind:'video',src:'podcast-ep5.mp4',title:'05 · Episodio 5'}]}
 ];
@@ -268,7 +268,8 @@ function selectGalleryMedia(i){
  if(i>=count){galleryProjectIndex=(galleryProjectIndex+1)%galleryProjects.length;galleryMediaIndex=0;renderGalleryTabs();}
  else if(i<0){galleryProjectIndex=(galleryProjectIndex-1+galleryProjects.length)%galleryProjects.length;galleryMediaIndex=galleryProjects[galleryProjectIndex].items.length-1;renderGalleryTabs();}
  else galleryMediaIndex=i;
- if(galleryProjectIndex!==2)resumeAfterPodcast();
+ // Resume the soundtrack when leaving a playing video, without resetting its position.
+ if(galleryProjectIndex!==2 || galleryProjects[galleryProjectIndex].items[galleryMediaIndex].kind!=='video' || galleryProjects[galleryProjectIndex].items[galleryMediaIndex].silent)resumeAfterPodcast();
  renderGallery();
 }
 function renderGallery(){
@@ -280,7 +281,20 @@ function renderGallery(){
  $('galleryFrameCount').textContent=String(galleryMediaIndex+1).padStart(2,'0')+' / '+String(n).padStart(2,'0');
  $('galleryProgressFill').style.width=((galleryMediaIndex+1)/n*100)+'%';
  const screen=$('galleryScreenContent');stopGalleryVideo();
- if(item.kind==='video' && item.embed){const mat=document.createElement('div');mat.className='gallery-video-mat';const frame=document.createElement('iframe');frame.src=item.src+'?rel=0&playsinline=1';frame.title=item.title;frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;frame.style.cssText='width:100%;height:100%;border:0';mat.append(frame);screen.append(mat);
+ if(item.kind==='video' && item.driveEmbed){
+  // Google Drive final documentary: load only when the visitor presses play.
+  // This avoids a large GitHub upload and keeps the existing gallery layout.
+  const mat=document.createElement('div');mat.className='gallery-video-mat brela-final-video';
+  const start=document.createElement('button');start.type='button';start.className='brela-final-play';start.setAttribute('aria-label','Play the final Brela documentary');
+  start.innerHTML='<img src="assets/brela_video_preview.jpg" alt=""><span>▶ WATCH FINAL DOCUMENTARY</span>';
+  start.addEventListener('click',()=>{
+    pauseForPodcast();
+    const frame=document.createElement('iframe');frame.src=item.src;frame.title=item.title;
+    frame.allow='autoplay; fullscreen; picture-in-picture';frame.allowFullscreen=true;
+    frame.style.cssText='width:100%;height:100%;border:0';mat.replaceChildren(frame);
+  });
+  mat.append(start);screen.append(mat);
+ }else if(item.kind==='video' && item.embed){const mat=document.createElement('div');mat.className='gallery-video-mat';const frame=document.createElement('iframe');frame.src=item.src+'?rel=0&playsinline=1';frame.title=item.title;frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;frame.style.cssText='width:100%;height:100%;border:0';mat.append(frame);screen.append(mat);
  }else if(item.kind==='video'){
   // Local MP4 episodes in chronological order; no YouTube embed required.
   const video=document.createElement('video');video.src='assets/'+item.src;video.controls=true;video.preload='metadata';video.playsInline=true;if(item.silent){video.muted=true;video.defaultMuted=true;video.autoplay=true;video.loop=true;video.setAttribute('muted','');video.setAttribute('autoplay','');video.setAttribute('loop','');}video.setAttribute('playsinline','');video.setAttribute('aria-label',item.title);if(!item.silent)video.addEventListener('play',pauseForPodcast);video.addEventListener('error',()=>{const note=document.createElement('p');note.className='video-file-error';note.textContent='Video unavailable in this browser.';screen.append(note);});const mat=document.createElement('div');mat.className='gallery-video-mat';mat.append(video);
@@ -296,7 +310,7 @@ function renderGallery(){
  const thumbs=$('galleryThumbs');thumbs.replaceChildren();project.items.forEach((entry,i)=>{
   const button=document.createElement('button');button.type='button';button.className='gallery-thumb'+(i===galleryMediaIndex?' active':'');button.setAttribute('aria-label','View '+(entry.kind==='video'?'episode ':'photo ')+(i+1));
   if(entry.kind==='photo'){const image=document.createElement('img');image.src='assets/'+entry.src;image.alt='';button.append(image);}
-  else if(entry.silent){const preview=document.createElement('img');preview.src='assets/brela_video_preview.jpg';preview.alt='Brela video preview';button.append(preview);}else{const label=document.createElement('span');label.textContent=(['▶ PILOTO','▶ EPISODIO 2','▶ EPISODIO 3','▶ EPISODIO 5'][i] || ('▶ EP '+String(i+1).padStart(2,'0')));button.append(label);}
+  else if(entry.silent || entry.driveEmbed){const preview=document.createElement('img');preview.src='assets/brela_video_preview.jpg';preview.alt=entry.title||'Brela video preview';button.append(preview);}else{const label=document.createElement('span');label.textContent=(['▶ PILOTO','▶ EPISODIO 2','▶ EPISODIO 3','▶ EPISODIO 5'][i] || ('▶ EP '+String(i+1).padStart(2,'0')));button.append(label);}
   button.addEventListener('click',()=>selectGalleryMedia(i));thumbs.append(button);
  });
  const extra=$('galleryExtra');extra.replaceChildren();
