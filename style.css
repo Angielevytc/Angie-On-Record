@@ -1038,3 +1038,8 @@ html,body{min-height:100%;background:#d8d3c9}
 .gatefold:has(.song-quiz) .quiz-contact{flex-wrap:wrap}
 .gatefold:has(.song-quiz) .quiz-email-address{display:block;width:100%;font:11px Arial,sans-serif;color:#7b5d5c;letter-spacing:.35px;text-align:right;margin-top:-10px}
 @media(max-width:850px){.gatefold:has(.song-quiz) .quiz-email-address{text-align:left;margin-top:0}}
+
+/* Clearly visible documentary controls in the Brela gallery details. */
+.brela-watch-button{display:block;width:100%;max-width:340px;padding:15px 20px;margin:18px 0 10px;background:#ab2841;color:#fff;border:1px solid #ab2841;font:700 12px Arial,Helvetica,sans-serif;letter-spacing:1.1px;text-align:center;cursor:pointer}
+.brela-watch-button:hover,.brela-watch-button:focus-visible{background:#8c2034;color:#fff}
+.brela-watch-backup{display:inline-block;margin:3px 0 12px;color:#7d263d;font:700 11px Arial,Helvetica,sans-serif;letter-spacing:.6px;text-decoration:underline;text-underline-offset:3px}
